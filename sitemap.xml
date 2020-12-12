@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.abeltian.top/2020/12/12/pipe/</loc>
+    
+    <lastmod>2020-12-12</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.abeltian.top/2020/12/10/%E5%8C%BA%E9%97%B4%E5%92%8C/</loc>
     
     <lastmod>2020-12-10</lastmod>
@@ -32,7 +39,7 @@
 
   <url>
     <loc>http://www.abeltian.top/</loc>
-    <lastmod>2020-12-10</lastmod>
+    <lastmod>2020-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -40,14 +47,21 @@
   
   <url>
     <loc>http://www.abeltian.top/tags/segment-tree/</loc>
-    <lastmod>2020-12-10</lastmod>
+    <lastmod>2020-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://www.abeltian.top/tags/%E5%8C%BA%E9%97%B4%E5%92%8C/</loc>
-    <lastmod>2020-12-10</lastmod>
+    <lastmod>2020-12-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.abeltian.top/tags/Linux/</loc>
+    <lastmod>2020-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -56,7 +70,14 @@
   
   <url>
     <loc>http://www.abeltian.top/categories/Data-Structure/</loc>
-    <lastmod>2020-12-10</lastmod>
+    <lastmod>2020-12-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.abeltian.top/categories/Linux/</loc>
+    <lastmod>2020-12-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
