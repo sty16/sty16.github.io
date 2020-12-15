@@ -6,7 +6,7 @@
   <link href="http://abeltian.top/atom.xml" rel="self"/>
   
   <link href="http://abeltian.top/"/>
-  <updated>2020-12-14T14:42:10.761Z</updated>
+  <updated>2020-12-15T15:15:04.454Z</updated>
   <id>http://abeltian.top/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>DTMF信号检测与识别</title>
+    <link href="http://abeltian.top/2020/12/15/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/"/>
+    <id>http://abeltian.top/2020/12/15/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/</id>
+    <published>2020-12-15T14:17:52.000Z</published>
+    <updated>2020-12-15T15:15:04.454Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="DTMF信号的检测与识别"><a href="#DTMF信号的检测与识别" class="headerlink" title="DTMF信号的检测与识别"></a>DTMF信号的检测与识别</h3><h3 id="1-程序设计思路与框图"><a href="#1-程序设计思路与框图" class="headerlink" title="1. 程序设计思路与框图"></a>1. 程序设计思路与框图</h3><h4 id="1-1-FFT直接计算"><a href="#1-1-FFT直接计算" class="headerlink" title="1.1 FFT直接计算"></a>1.1 FFT直接计算</h4><p>利用FFT计算输入的信号的DFT频域信息，并找到两个峰值频率点，从而检测DTMF信号。</p><ul><li><p>数据预处理，作业给定的为.wav文件，其中数据为16bit的short类型，文件指针偏移40个字节的位置记录了wav数据块的字节数，调用read函数将之后的数据读入到数组中。</p></li><li><p>编写类FFTMethod，调用第一次作业编写的时域基2DFT对音频信号做FFT变换。找到频域中两个峰值对应的数字角频率，从而计算得到模拟角频率，找到对应的DTMF信号</p></li><li><p>程序框图</p><img src="https://i.loli.net/2020/12/15/qX4PvIlB36bjSLc.png" alt="image-20201215223342850.png" height=400></li></ul><h4 id="1-2-Goertzel-算法"><a href="#1-2-Goertzel-算法" class="headerlink" title="1.2 Goertzel 算法"></a>1.2 Goertzel 算法</h4><p>计算FFT包含了信号整个频域的信息，而我们只关注DTMF信号的八个特定频率，因此算法存在冗余。在FFT中如果我们只关注某一个特定的数字角频率，$X[k] = \sum_{n = 0}^{N- 1}x[m]W_n^{m -N}$，其可以视为$x[n]$通过冲激响应为$W_N^{-nk}$的LTI系统在N时刻的取值。第k个频点对应的差分方程为：<br>$$<br>V_k[n] = 2cos(\omega_k)V_k[n - 1] - V_k[n-2] + x[n] \<br>X_k[n] = V_k[n] - W_N^k[n - 1], v[-1] = v[-2] = 0<br>$$<br>其本质是一个动态规划的过程，由递推关系可以得到n时刻的状态，从而确定该频点的FFT。得到八个特定频点的FFT值后，选择两个峰值，从而确定DTMF信号。</p><img src="https://i.loli.net/2020/12/15/WPjz2ItDx5vhKuM.png" alt="image-20201215224401308.png" height=400><h4 id="1-3一串DTMF信号的识别"><a href="#1-3一串DTMF信号的识别" class="headerlink" title="1.3一串DTMF信号的识别"></a>1.3一串DTMF信号的识别</h4><p>下图为一串DTMF信号的时域图像，可以看到其中包含了15个DTMF信号，我们要做的工作是确定每一个信号的起始于结束位置，直接使用强度值进行判断存在较大的误差，因此选择滑动窗取平均的方式。程序中选择滑动窗大小为64，计算信号每个点对应的滑动窗内的平均能量，并与阈值作比较，从而确定每一个信号的起始结束位置。之后将每一段信号采用上述的两种方法进行信号判断</p><p><img src="https://i.loli.net/2020/12/15/mMfArlcUnZO8sPT.png" alt="image-20201215224445627.png"></p><ul><li>程序框图</li></ul><img src="https://i.loli.net/2020/12/15/5Olr6ciBUpfImsC.png" alt="image-20201215225103976.png" height=400><h3 id="2-两种算法的结果与复杂度比较"><a href="#2-两种算法的结果与复杂度比较" class="headerlink" title="2.两种算法的结果与复杂度比较"></a>2.两种算法的结果与复杂度比较</h3><p>实验结果：</p><p><img src="https://i.loli.net/2020/12/15/oUfzLdDCkjwVQKH.png" alt="image-20201215225340386.png"></p><p>复杂度分析：</p><ul><li><p>FFT方法采用DFT计算了所有的频点信息，时间复杂度为$O(nlogn)$，寻找峰值的复杂度为O(n)，总的时间复杂度为$O(nlogn) + O(n)$</p></li><li><p>Goertzel方法只计算特定的8个频点，并采用差分方程的形式递归计算，时间复杂度为O(n)</p></li><li><p>FFT方法需要存储所有的频域信息，空间复杂度为$O(n)$， Goertzel方法在递推过程中只需要V[i-1]、V[i-2]这两个状态， 空间复杂度为$O(1)$</p></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;DTMF信号的检测与识别&quot;&gt;&lt;a href=&quot;#DTMF信号的检测与识别&quot; class=&quot;headerlink&quot; title=&quot;DTMF信号的检测与识别&quot;&gt;&lt;/a&gt;DTMF信号的检测与识别&lt;/h3&gt;&lt;h3 id=&quot;1-程序设计思路与框图&quot;&gt;&lt;a href=&quot;#1-</summary>
+      
+    
+    
+    
+    <category term="信号处理" scheme="http://abeltian.top/categories/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/"/>
+    
+    
+    <category term="信号处理" scheme="http://abeltian.top/tags/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/"/>
+    
+  </entry>
   
   <entry>
     <title>unix shell简单实现</title>
