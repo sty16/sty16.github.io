@@ -6,7 +6,7 @@
   <link href="http://abeltian.top/atom.xml" rel="self"/>
   
   <link href="http://abeltian.top/"/>
-  <updated>2020-12-17T15:49:22.226Z</updated>
+  <updated>2020-12-18T03:43:34.345Z</updated>
   <id>http://abeltian.top/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>快速选择算法</title>
+    <link href="http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/"/>
+    <id>http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/</id>
+    <published>2020-12-18T03:32:15.000Z</published>
+    <updated>2020-12-18T03:43:34.345Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="快速选择算法"><a href="#快速选择算法" class="headerlink" title="快速选择算法"></a>快速选择算法</h4><p>题目描述：在未排序的数组中找到第 <strong>k</strong> 个最大的元素。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,2,1,5,6,4] 和 k &#x3D; 2</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure><p>​        快速选择算法本质上是对快速排序算法进行优化，快速排序算法是将数组进行划分，从数组中任选一个元素，调整数组使得左边元素都比它小，其4右侧元素都比它大。通过递归调用快速排序对左侧序列与右侧序列进行排序。而快速选择算法对左侧区间和右侧区间的数据个数与需要寻找的第K大的数字进行比较，选择答案所存在的区间，舍弃了另一个不需要的区间，使算法复杂度降低到$ O(n+ n/2 + n/4 +…)$期望为$O(n)$，但是在最坏的情况下每次选择的都是最大或者最小值，算法时间复杂度为$O(n^2)$。</p><p>针对题目数据，未加入随机数时间为56ms，加入随机数为16ms</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size();</span><br><span class="line">        <span class="keyword">return</span> quick_select(nums, <span class="number">0</span>, n - <span class="number">1</span>, n - k + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">quick_select</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> randPos = l + rand() % (r - l + <span class="number">1</span>);</span><br><span class="line">        swap(nums[l], nums[randPos]);</span><br><span class="line">        <span class="keyword">int</span> pivot = nums[l];</span><br><span class="line">        <span class="keyword">int</span> i = l, j = r;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[j] &gt;= pivot) --j;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[i] = nums[j];</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[i] &lt; pivot) ++i;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[j] = nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        nums[i] = pivot;</span><br><span class="line">        <span class="keyword">int</span> idx = i - l + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (idx == k) <span class="keyword">return</span> pivot;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> idx &lt; k ? quick_select(nums, i + <span class="number">1</span>, r, k - idx) : quick_select(nums, l, i - <span class="number">1</span>, k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h4 id=&quot;快速选择算法&quot;&gt;&lt;a href=&quot;#快速选择算法&quot; class=&quot;headerlink&quot; title=&quot;快速选择算法&quot;&gt;&lt;/a&gt;快速选择算法&lt;/h4&gt;&lt;p&gt;题目描述：在未排序的数组中找到第 &lt;strong&gt;k&lt;/strong&gt; 个最大的元素。&lt;/p&gt;
+&lt;figur</summary>
+      
+    
+    
+    
+    <category term="Data Structure" scheme="http://abeltian.top/categories/Data-Structure/"/>
+    
+    
+    <category term="Data Structure" scheme="http://abeltian.top/tags/Data-Structure/"/>
+    
+  </entry>
   
   <entry>
     <title>最小的k个数</title>
