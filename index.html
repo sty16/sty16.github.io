@@ -162,6 +162,416 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/22/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/22/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">动态规划优化-单调队列</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-22 20:03:51 / 修改时间：20:52:35" itemprop="dateCreated datePublished" datetime="2020-12-22T20:03:51+08:00">2020-12-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="动态规划优化-单调队列"><a href="#动态规划优化-单调队列" class="headerlink" title="动态规划优化-单调队列"></a>动态规划优化-单调队列</h3><p>当状态转移的复杂度为$O(n)$时， 状态个数为n个，动态规划的算法复杂度为$O(n^2)$，可能会超时，因此对状态转移的过程进行优化，将状态转移的复杂度降低到$O(logn)$或$O(1)$</p>
+<h4 id="例1-多重背包的单调队列优化"><a href="#例1-多重背包的单调队列优化" class="headerlink" title="例1 多重背包的单调队列优化"></a>例1 多重背包的单调队列优化</h4><blockquote>
+<p>有 <em>N</em> 种物品和一个容量是 <em>V</em>的背包。第 <em>i</em>种物品最多有 $s_i$ 件，每件体积是 $v_i$，价值是$w_i$。求解将哪些物品装入背包，可使物品体积总和不超过背包容量，且价值总和最大。输出最大价值。0&lt;<em>N</em>≤1000<br>0&lt;<em>V</em>≤20000<br>0&lt;$s_i$,$v_i$,$w_i$≤20000</p>
+</blockquote>
+<p>状态转移方程，可以按照体积进行分组，本质上是求一个滑动窗口的最大值。<br>$$<br>dp[j+mv] = max(dp[j] + mw,  dp[j+v] + (m - 1)w, \dots, dp[j+mv])<br>$$<br>对上面的状态转移方程进行变形,采用单调队列进行优化，代码如下：<br>$$<br>dp[j+mv] = max(dp[j],  dp[j+v] - w, \dots, dp[j+mv]) + mw<br>$$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">20010</span>], pre[<span class="number">20010</span>], dq[<span class="number">20010</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m, v, w, s;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0</span>, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; v &gt;&gt; w &gt;&gt; s;</span><br><span class="line">        <span class="built_in">memcpy</span>(pre, dp, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">        <span class="built_in">memset</span>(dp, <span class="number">0</span>, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; v; ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> head = <span class="number">0</span>, tail = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = j; k &lt;= m; k += v) &#123;</span><br><span class="line">                <span class="keyword">while</span> (head &lt;= tail &amp;&amp; pre[k] - pre[dq[tail]] &gt; (k - dq[tail]) / v * w) &#123;</span><br><span class="line">                    tail--;</span><br><span class="line">                &#125;</span><br><span class="line">                dq[++tail] = k;</span><br><span class="line">                <span class="keyword">if</span> ((k - dq[head]) / v &gt; s) head++;</span><br><span class="line">                dp[k] = pre[dq[head]] + (k - dq[head]) / v * w;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; dp[m] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="例2-跳跃游戏VI"><a href="#例2-跳跃游戏VI" class="headerlink" title="例2 跳跃游戏VI"></a>例2 跳跃游戏VI</h4><blockquote>
+<p>给你一个下标从 <strong>0</strong> 开始的整数数组 <code>nums</code> 和一个整数 <code>k</code> 。一开始你在下标 <code>0</code> 处。每一步，你最多可以往前跳 <code>k</code> 步，但你不能跳出数组的边界, 达数组最后一个位置（下标为 <code>n - 1</code> ），你的 <strong>得分</strong> 为经过的所有数字之和。请你返回你能得到的 <strong>最大得分</strong> 。</p>
+<p>1 &lt;= nums.length, k &lt;= $10^5$<br>$-10^4$ &lt;= nums[i] &lt;= $10^4$</p>
+</blockquote>
+<p>状态转移方程</p>
+<p>$$<br>f[i]=\max_{max(0,i−k)≤j&lt;i}​{f[j]}+nums[i]<br>$$</p>
+<p>该状态转移方程为$O(n^2)$，但是我们仅需要前面这个滑动窗中的最大值，因此采用单调队列的方式进行优化，使得队列头部为该滑动窗的最大值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxResult</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size();</span><br><span class="line">        <span class="built_in">deque</span>&lt;<span class="keyword">int</span>&gt; dq&#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(n, <span class="number">0</span>)</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i - dq.front() &gt; k) dq.pop_front();</span><br><span class="line">            <span class="keyword">int</span> val = dp[dq.front()] + nums[i];</span><br><span class="line">            <span class="keyword">while</span> (!dq.empty() &amp;&amp; val &gt; dp[dq.back()]) &#123;</span><br><span class="line">                dq.pop_back();</span><br><span class="line">            &#125;</span><br><span class="line">            dq.push_back(i);</span><br><span class="line">            dp[i] = val;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/21/leetcode-372/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/21/leetcode-372/" class="post-title-link" itemprop="url">leetcode_372</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-21 17:35:27" itemprop="dateCreated datePublished" datetime="2020-12-21T17:35:27+08:00">2020-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/20/leetcode-418/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/20/leetcode-418/" class="post-title-link" itemprop="url">leetcode 418 屏幕可显示句子的数量</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-20 20:46:39" itemprop="dateCreated datePublished" datetime="2020-12-20T20:46:39+08:00">2020-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><blockquote>
+<p>给你一个 <code>rows x cols</code> 的屏幕和一个用 <strong>非空</strong> 的单词列表组成的句子，请你计算出给定句子可以在屏幕上完整显示的次数。</p>
+<ul>
+<li>单词不能拆分成两行。</li>
+<li>单词在句子中的顺序必须保持不变。</li>
+<li>在一行中 的两个连续单词必须用一个空格符分隔。</li>
+<li>句子中的单词总量不会超过 100。</li>
+<li>每个单词的长度大于 0 且不会超过 10。</li>
+<li>1 ≤ rows, cols ≤ 20,000.</li>
+</ul>
+</blockquote>
+<h4 id="方法1-暴力模拟-超时）"><a href="#方法1-暴力模拟-超时）" class="headerlink" title="方法1 暴力模拟(超时）"></a>方法1 暴力模拟(超时）</h4><p>​        开始看这道题没什么思路，放置单词这个应该没有什么规律，只能去暴力计算放置字符串的位置，模拟了一下在pos这个位置放置一个句子，下一次放置该句子的位置与行数。无奈被这个数据给卡了[“a”], 20000, 20000，按句子模拟必然超时。</p>
+<h3 id="方法2-动态规划"><a href="#方法2-动态规划" class="headerlink" title="方法2 动态规划"></a>方法2 动态规划</h3><p>​        这道题的trick在于单词数量比较少，不超过100个，并且当单词不能放入当前行时，下一次其一定放置在下一行的行首。这样可以定义两个状态，这样预处理的时间复杂度为$O(mN)$, 计算放置句子个数的过程时间复杂度为$O(N)$<br>$$<br>count[j] \quad 以第j个单词为当前行第一个单词时，放置的句子的个数 \<br>next[j] \quad 以第j个单词为当前行第一个单词时，下一行第一个单词<br>$$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">wordsTyping</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; sentence, <span class="keyword">int</span> rows, <span class="keyword">int</span> cols)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = sentence.size();</span><br><span class="line">        vector&lt;int&gt; cnt(n, 0), next(n, 0);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; arr;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">string</span> s : sentence) &#123;</span><br><span class="line">            arr.push_back(s.size());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = <span class="number">0</span>, idx = i;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= cols + <span class="number">1</span>;) &#123;</span><br><span class="line">                j += arr[idx] + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (j &gt; cols + <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">if</span> (idx == n - <span class="number">1</span>) tmp++;</span><br><span class="line">                idx = (idx + <span class="number">1</span>) % n;</span><br><span class="line">            &#125;</span><br><span class="line">            cnt[i] = tmp;</span><br><span class="line">            next[i] = idx;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>, idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; ++i) &#123;</span><br><span class="line">            ans += cnt[idx];</span><br><span class="line">            idx = next[idx];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/19/%E6%89%8B%E5%86%99%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/19/%E6%89%8B%E5%86%99%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/" class="post-title-link" itemprop="url">手写字符识别</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-19 21:26:51" itemprop="dateCreated datePublished" datetime="2020-12-19T21:26:51+08:00">2020-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="计算机视觉-computer-Vision"><a href="#计算机视觉-computer-Vision" class="headerlink" title="计算机视觉(computer Vision)"></a>计算机视觉(computer Vision)</h3><h3 id="1-全连接与CNN模型比较"><a href="#1-全连接与CNN模型比较" class="headerlink" title="1.全连接与CNN模型比较"></a>1.全连接与CNN模型比较</h3><p>​        好久没弄过深度学习的东西了，上次写得时候应该是大三上学期，一转眼就是两年了。感觉自己的记忆力好差啊，之前搞得那些已经是忘得一干二净了。这次的任务是采用Omniglot数据集进行手写数字的识别，该数据及包含了50中字母系统中共计1623种字符，每个字符有20个样本，部分样本如下图所示。</p>
+<p><img src="https://i.loli.net/2020/12/19/ESTwN5m9IBesoLg.png" alt="image-20201219215358508.png"></p>
+<p>​        我采用的深度学习框架是pytorch，当用户使用DataLoader加载自定义数据时，需要继承Dataset这个类，并重写其中的两个方法。传入参数为图片路径与标签的字典。采用DataLoader()加载数据，batch_size大小设置为64。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span>(<span class="params">self, index</span>):</span></span><br><span class="line">	<span class="keyword">raise</span> NotImplementedError</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__len__</span>(<span class="params">self</span>):</span></span><br><span class="line">	<span class="keyword">raise</span> NotImplementedError</span><br></pre></td></tr></table></figure>
+
+<p>定义包含一个隐层的全连接模型, 训练50个epoch，训练集上的loss与测试集上的accuracy如下图所示，全连接模型测试集的准群率在40%左右。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model = nn.Sequential(</span><br><span class="line">    nn.Linear(<span class="number">784</span>, <span class="number">2048</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Linear(<span class="number">2048</span>, <span class="number">50</span>),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/19/M9dejr8lyckFviV.png" alt="image-20201219221535989.png"></p>
+<p>定义包含四个卷积层与两个全连接层的CNN网络， 训练50次，测试集上的最高准确率为0.8389，相比于全连接模型，准确率大大提升。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">    x = self.conv1(x)</span><br><span class="line">    x = self.conv2(x)</span><br><span class="line">    x = self.conv3(x)</span><br><span class="line">    x = self.conv4(x)</span><br><span class="line">    x = x.view(x.size(<span class="number">0</span>), -<span class="number">1</span>)  <span class="comment"># (batch_size, size)</span></span><br><span class="line">    output = self.out(x)</span><br><span class="line">    <span class="keyword">return</span> output</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/19/CGVWcfxUHilDn4Q.png" alt="image-20201219221339503.png"></p>
+<h3 id="2-尝试与对比"><a href="#2-尝试与对比" class="headerlink" title="2.尝试与对比"></a>2.尝试与对比</h3><h4 id="2-1数据集的划分"><a href="#2-1数据集的划分" class="headerlink" title="2.1数据集的划分"></a>2.1数据集的划分</h4><p>​    将类别设置为20类，每个类别训练集为15个样本，测试集为3个样本，结果如下图所示，分类准确率相比于50类明显提升，最高为0.9314。适当的减少分类类别可以提升模型的分类准确率。</p>
+<p><img src="https://i.loli.net/2020/12/20/8wzl6Vv7ZYMJci2.png" alt="image-20201220110750985.png"></p>
+<h4 id="2-2改变模型结构"><a href="#2-2改变模型结构" class="headerlink" title="2.2改变模型结构"></a>2.2改变模型结构</h4><p>相比于示例给出的卷积网络，再加入一卷积层，结果如下，分类准确率变化不大。</p>
+<p><img src="https://i.loli.net/2020/12/20/q9AlUmfcGSTjJ1y.png" alt="image-20201220111552338.png"></p>
+<h4 id="2-3-不同的优化器比较"><a href="#2-3-不同的优化器比较" class="headerlink" title="2.3 不同的优化器比较"></a>2.3 不同的优化器比较</h4><p>上述训练都是采用的SGD优化器，改为Adagrad优化器的结果如下，loss相比于SGD优化器，没有较大的波动。准确率相比于SGD也有较大的提升，最高为0.8647。</p>
+<p><img src="https://i.loli.net/2020/12/20/PLR1cd3UGbqIifS.png" alt="image-20201220112546931.png"></p>
+<p>采用Adam优化器结果如下所示，其收敛速度慢于Adagrad优化器，训练500个epoch结果如下。测试集上的分类准确率为0.8777</p>
+<p><img src="https://i.loli.net/2020/12/20/F3fbyivgxdrC7em.png" alt="image-20201220114010564.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E8%BF%9B%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/18/%E8%BF%9B%E7%A8%8B/" class="post-title-link" itemprop="url">进程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-18 16:13:22" itemprop="dateCreated datePublished" datetime="2020-12-18T16:13:22+08:00">2020-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="1-进程的概念"><a href="#1-进程的概念" class="headerlink" title="1.进程的概念"></a>1.进程的概念</h4><p>程序(program)是一个存储在磁盘上某个目录中的可执行文件，内核使用exec函数将程序读入内存，并执行程序。</p>
+<p>程序执行的实例被称为进程(process), unix系统确保每个进程都有一个唯一的数字标识符，称为进程ID</p>
+<h4 id="2-进程环境"><a href="#2-进程环境" class="headerlink" title="2.进程环境"></a>2.进程环境</h4><p>进程命令行参数，当执行一个程序时，在调用main函数前先调用一个特殊的启动例程，启动例程从内核获得命令行参数和环境变量值，之后调用main函数。POSIX.1要求argv[argc]是一个空指针，因此在参数处理的循环中可以改写为</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; argv[i] != <span class="literal">NULL</span>; ++i)</span><br></pre></td></tr></table></figure>
+
+<p>环境表: 环境表是一个字符指针数组，其中每个指针为一个以’\0’为结尾的C字符串地址，全局变量environ环境指针为该指针数组的地址。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> **environ;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -604,284 +1014,11 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/12/pipe/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/12/pipe/" class="post-title-link" itemprop="url">pipe</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-12 14:36:56" itemprop="dateCreated datePublished" datetime="2020-12-12T14:36:56+08:00">2020-12-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-14 22:05:13" itemprop="dateModified" datetime="2020-12-14T22:05:13+08:00">2020-12-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-管道的概念"><a href="#1-管道的概念" class="headerlink" title="1.管道的概念"></a>1.管道的概念</h3><p>管道是一种最基本的IPC机制，作用于有血缘关系的进程之间，完成数据传递，通过pipe()系统调用即可创建一个管道。</p>
-<ul>
-<li>其本质是一个伪文件，实为内核缓冲区</li>
-<li>两个文件描述符引用，一个表示读端，一个表示写端</li>
-<li>管道采用半双工通信方式，数据只能在一个方向流动</li>
-<li>只能在有公共祖先的进程间使用管道</li>
-</ul>
-<h3 id="2-pipe函数"><a href="#2-pipe函数" class="headerlink" title="2.pipe函数"></a>2.pipe函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pipe</span><span class="params">(<span class="keyword">int</span> (*pipefd)[<span class="number">2</span>])</span></span>;   </span><br><span class="line">ret <span class="number">0</span> : SUCCESS</span><br><span class="line">	<span class="number">-1</span> : Failure</span><br></pre></td></tr></table></figure>
-
-<p>函数调用成功返回read/write两个文件描述符，无需open，需要手动close。</p>
-<p><img src="https://i.loli.net/2020/12/14/DyFH2peimEcnjMf.png" alt="img"></p>
-<ul>
-<li><p>父进程调用pipe函数创建管道，得到两个文件描述符fd[0]、fd[1]指向管道的读端和写端</p>
-</li>
-<li><p>父进程调用fork()创建子进程，子进程继承父进程文件描述符。</p>
-</li>
-<li><p>父进程关闭管道读端，子进程关闭管道写端，父进程可以向管道中写入数据，子进程将管道中数据读出。</p>
-</li>
-</ul>
-<h3 id="3-管道读写行为"><a href="#3-管道读写行为" class="headerlink" title="3.管道读写行为"></a>3.管道读写行为</h3><p> 使用管道需要注意以下4种特殊情况</p>
-<ul>
-<li>如果所有指向管道写端的文件描述符都关闭了（管道写端引用计数为0），而仍然有进程从管道的读端读数据，那么管道中剩余的数据都被读取后，再次read会返回0，就像读到文件末尾一样。</li>
-<li>如果有指向管道写端的文件描述符没关闭（管道写端引用计数大于0），而持有管道写端的进程也没有向管道中写数据，这时有进程从管道读端读数据，那么管道中剩余的数据都被读取后，再次read会阻塞，直到管道中有数据可读了才读取数据并返回。</li>
-<li>如果所有指向管道读端的文件描述符都关闭了（管道读端引用计数为0），这时有进程向管道的写端write，那么该进程会收到信号SIGPIPE，通常会导致进程异常终止。当然也可以对SIGPIPE信号实施捕捉，不终止进程。具体方法信号章节详细介绍。</li>
-<li>如果有指向管道读端的文件描述符没关闭（管道读端引用计数大于0），而持有管道读端的进程也没有从管道中读数据，这时有进程向管道写端写数据，那么在管道被写满时再次write会阻塞，直到管道中有空位置了才写入数据并返回。</li>
-</ul>
-<h3 id="4-示例程序-采用管道实现-ls-home-wc"><a href="#4-示例程序-采用管道实现-ls-home-wc" class="headerlink" title="4.示例程序 采用管道实现 ls /home | wc"></a>4.示例程序 采用管道实现 ls /home | wc</h3><p>主线程调用fork()创建两个进程一个执行ls /home，另一个执行 wc，利用管道重定向两个进程的stdout，stdin。</p>
-<p>踩坑记录，在主线程wait(NULL)前，需要手动关闭主线程的所有管道，否则第二个进程会处于读阻塞的状态，因此发生了死锁</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> f[<span class="number">2</span>];</span><br><span class="line">    pipe(f);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">pid_t</span> pid = fork();</span><br><span class="line">        <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == <span class="number">1</span>) &#123;</span><br><span class="line">                close(f[<span class="number">1</span>]);</span><br><span class="line">                dup2(f[<span class="number">0</span>], <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">char</span> *name = <span class="string">&quot;/usr/bin/wc&quot;</span>;</span><br><span class="line">                <span class="keyword">char</span> **argv = <span class="keyword">new</span> <span class="keyword">char</span>*[<span class="number">1</span>];</span><br><span class="line">                argv[<span class="number">0</span>] = <span class="string">&quot;/usr/bin/wc&quot;</span>;</span><br><span class="line">                <span class="keyword">int</span> exet_st = execv(name, argv);</span><br><span class="line">                close(f[<span class="number">0</span>]);</span><br><span class="line">                _exit(EXIT_SUCCESS);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                close(f[<span class="number">0</span>]);</span><br><span class="line">                <span class="keyword">char</span> buff[] = <span class="string">&quot;test&quot;</span>;</span><br><span class="line">                write(f[<span class="number">1</span>], buff, <span class="built_in">strlen</span>(buff));</span><br><span class="line">                close(f[<span class="number">1</span>]);</span><br><span class="line">                _exit(EXIT_SUCCESS);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    close(f[<span class="number">0</span>]);</span><br><span class="line">    close(f[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">        wait(<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/10/%E5%8C%BA%E9%97%B4%E5%92%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/10/%E5%8C%BA%E9%97%B4%E5%92%8C/" class="post-title-link" itemprop="url">区间和</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-10 15:17:40" itemprop="dateCreated datePublished" datetime="2020-12-10T15:17:40+08:00">2020-12-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-14 22:05:13" itemprop="dateModified" datetime="2020-12-14T22:05:13+08:00">2020-12-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/submissions/">leetcode 1477 找两个和为目标值且不重叠的子数组</a></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/minimum-operations-to-reduce-x-to-zero/">leetcode 1658 将x减小到0的最小次数</a></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-points-you-can-obtain-from-cards/">leetcode 1423 可获得的最大点数</a></p>
-<p>题目中给出的数据范围$1\le arr[i]\le10^4$，因此找到一段区间和为某一个数值，可以采用双指针的方式，如果当前区域的和大于target，则移动前面的指针，直到区间和小于等于target。如果存在负数或零，则采用前缀和与哈希表的方式。</p>
-<p>对于题目1477 其要找到满足等于给定和的最小的两个不想交的区间，采用dp[j]表示区间右端点小于等于j的最小区间长度。<br>$$<br>dp[j] = \min(dp[j - 1], j - i + 1) \<br>ans = \min(ans, dp[i - 1] + j - i + 1)<br>$$</p>
- <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minSumOfLengths</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; arr, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = arr.size();</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, sum = <span class="number">0</span>, ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(n, <span class="number">0x3f3f3f3f</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            sum += arr[j];</span><br><span class="line">            <span class="keyword">while</span> (sum &gt; target &amp;&amp; i &lt; j) &#123;</span><br><span class="line">                sum -= arr[i];</span><br><span class="line">                ++i;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (j &gt; <span class="number">0</span>) dp[j] = dp[j - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">                dp[j] = min(dp[j], j - i + <span class="number">1</span>);</span><br><span class="line">                <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    ans = min(ans, dp[i - <span class="number">1</span>] + j - i + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == <span class="number">0x3f3f3f3f</span> ? <span class="number">-1</span> : ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>对于1658题，首先找到一段区间和为x，然后调整两个指针的位置使得两端区间和为x</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minOperations</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size(), ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">        <span class="keyword">int</span> j = n - <span class="number">1</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; sum &lt; x) &#123;</span><br><span class="line">            sum += nums[j];</span><br><span class="line">            --j;</span><br><span class="line">        &#125;</span><br><span class="line">        ++j;</span><br><span class="line">        <span class="keyword">if</span> (sum == x) ans = n - j;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            sum += nums[i];</span><br><span class="line">            <span class="keyword">while</span> (j &lt; n &amp;&amp; sum &gt; x) &#123;</span><br><span class="line">                sum -= nums[j];</span><br><span class="line">                ++j;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (sum == x &amp;&amp; j &gt; i) &#123;</span><br><span class="line">                ans = min(ans, i + <span class="number">1</span> + n - j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == <span class="number">0x3f3f3f3f</span> ? <span class="number">-1</span> : ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/09/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/09/%E7%BA%BF%E6%AE%B5%E6%A0%91/" class="post-title-link" itemprop="url">线段树</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-09 19:55:27" itemprop="dateCreated datePublished" datetime="2020-12-09T19:55:27+08:00">2020-12-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-14 22:05:13" itemprop="dateModified" datetime="2020-12-14T22:05:13+08:00">2020-12-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>每个叶子节点为最小的分割区间，即为数组存储的值。</p>
-<p>假设树的高度为k，0,1,2$\dots$k，另n为区间个数，则有$2^{k - 1} &lt; n \le 2^k$，整棵树的节点个数有$2^{k + 1} - 1$个，通常线段树空间大小为4 * n</p>
-<p>leetcode 1109 航班预订统计</p>
-<p>leetcode 307 区间和检索-数组可修改</p>
-<p>leetcode 308 二维区域和检索—可变</p>
-<h4 id="线段树建树"><a href="#线段树建树" class="headerlink" title="线段树建树"></a>线段树建树</h4><p>数组下标同树状数组相同，都是从1开始</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == r) &#123;</span><br><span class="line">        d[p] = a[l];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    build(l, m, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">    build(m + <span class="number">1</span>, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">    d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树区间查询"><a href="#线段树区间查询" class="headerlink" title="线段树区间查询"></a>线段树区间查询</h4><p>l，r为查询区间，cl，cr为当前区间的左右边界。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(cl &gt; r || cr &lt; l) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) <span class="keyword">return</span> d[p];</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(l &lt;= mid) sum += query(l, r, p &lt;&lt; <span class="number">1</span>, cl, mid);</span><br><span class="line">        <span class="keyword">if</span>(r &gt; mid) sum += quert(l, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>s, mid + <span class="number">1</span>, cr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树的点更新-O-nlogn"><a href="#线段树的点更新-O-nlogn" class="headerlink" title="线段树的点更新$O(nlogn)$"></a>线段树的点更新$O(nlogn)$</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> k, <span class="keyword">int</span> v, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p)</span> </span>&#123;  <span class="comment">//update(k, v, 1, n, 1)</span></span><br><span class="line">    <span class="keyword">if</span>(l == r) a[k] += v, d[k] += v;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(k &lt;= mid) &#123;</span><br><span class="line">            update(k, v, l, mid, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            update(k, v, mid + <span class="number">1</span>, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树区间修改与懒惰标记"><a href="#线段树区间修改与懒惰标记" class="headerlink" title="线段树区间修改与懒惰标记"></a>线段树区间修改与懒惰标记</h4><p>对于一个区间$[l, r]$，如果每次更新区间中的每个值，那么时间复杂度为$O(nlogn)$，为了提高更新效率，采用了mark进行标记。在递归更新过程中，当当前节点区间为待更新区间的真子集时，不再向下更新。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_down</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    mark[p &lt;&lt; <span class="number">1</span>] += mark[p];</span><br><span class="line">    mark[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>] += mark[p];</span><br><span class="line">    d[p &lt;&lt; <span class="number">1</span>] += mark[p] * (len - len / <span class="number">2</span>);</span><br><span class="line">    d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>] += mark[p] * len / <span class="number">2</span>;</span><br><span class="line">    mark[p] = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt; cr || r &lt; cl) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) &#123;</span><br><span class="line">        d[p] += (cr - cl + <span class="number">1</span>) * val;</span><br><span class="line">        <span class="keyword">if</span>(cl &gt; cr) mark[p] += d;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="keyword">int</span> mid = cl + (cr - cl) / <span class="number">2</span>;</span><br><span class="line">        push_down(p, cr - cl + <span class="number">1</span>);</span><br><span class="line">        update(l, r, val, cl, mid, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        update(l, r, val, mid + <span class="number">1</span>, cr, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">        d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树区间查询-包含懒惰标记"><a href="#线段树区间查询-包含懒惰标记" class="headerlink" title="线段树区间查询 包含懒惰标记"></a>线段树区间查询 包含懒惰标记</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt; cr || r &lt; cl) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) <span class="keyword">return</span> d[p];</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	    <span class="keyword">if</span>(mark[p]) push_down(p, cr - cl + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> query(l, r, cl, mid, p &lt;&lt; <span class="number">1</span>) + query(l, r, mid + <span class="number">1</span>, cr, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -948,20 +1085,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
