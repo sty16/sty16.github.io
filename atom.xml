@@ -6,7 +6,7 @@
   <link href="http://abeltian.top/atom.xml" rel="self"/>
   
   <link href="http://abeltian.top/"/>
-  <updated>2021-01-12T13:31:22.314Z</updated>
+  <updated>2021-01-18T09:20:42.545Z</updated>
   <id>http://abeltian.top/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>洗牌算法</title>
+    <link href="http://abeltian.top/2021/01/18/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/"/>
+    <id>http://abeltian.top/2021/01/18/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/</id>
+    <published>2021-01-18T08:25:26.000Z</published>
+    <updated>2021-01-18T09:20:42.545Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="洗牌算法"><a href="#洗牌算法" class="headerlink" title="洗牌算法"></a>洗牌算法</h3><blockquote><p>给你一个整数数组 nums ，设计算法来打乱一个没有重复元素的数组。</p><p>int [] shuffle()返回数据随机打乱后的结果。</p></blockquote><h4 id="打乱的概念"><a href="#打乱的概念" class="headerlink" title="打乱的概念"></a>打乱的概念</h4><ul><li><p>随机打乱后的结果能够覆盖所有的情况，比如数组元素的个数为n，那么打乱后的结果应该覆盖$n!$种所有可能的结果</p></li><li><p>所有结果等概率出现</p></li></ul><h5 id="方法一-暴力"><a href="#方法一-暴力" class="headerlink" title="方法一 暴力"></a>方法一 暴力</h5><p>暴力的方法就是模拟，假设数组中的每个元素为一个小球，我们将其放入袋子中，进行不放回的抽取，直到袋子中没有小球，我们将抽取出来的小球按顺序排列得到一个排列组合，这个排列组合出现的概率为$\frac{1}{n!}$，因此这个 数组的每个排列组合都是等概的，算法时间复杂度$O(n2)$，vector&lt;int&gt;的erase()删除操作是O(n)的。</p><p>对于某一个排列组合其出现概率为<br>$$<br>\mathop{\Pi}\limits_{k = 0}^{n - 1}\frac{1}{n - k} = \frac{1}{n!}<br>$$</p><h5 id="方法二-Fisher-Yates算法"><a href="#方法二-Fisher-Yates算法" class="headerlink" title="方法二 Fisher-Yates算法"></a>方法二 Fisher-Yates算法</h5><p>Fisher-Yates 洗牌算法跟暴力算法很像。在每次迭代中，生成一个当前数组末尾指针下标的随机整数。接下来，将当前元素和随机选出的下标所指的元素互相交换，这步模拟了每次从袋子里面摸一个元素的过程。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">shuffle</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">int</span> pos = rand() % (i + <span class="number">1</span>);</span><br><span class="line">        swap(arr[i], arr[pos]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;洗牌算法&quot;&gt;&lt;a href=&quot;#洗牌算法&quot; class=&quot;headerlink&quot; title=&quot;洗牌算法&quot;&gt;&lt;/a&gt;洗牌算法&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;给你一个整数数组 nums ，设计算法来打乱一个没有重复元素的数组。&lt;/p&gt;
+&lt;p&gt;int [] </summary>
+      
+    
+    
+    
+    <category term="Data Structure" scheme="http://abeltian.top/categories/Data-Structure/"/>
+    
+    
+    <category term="Alogrithm" scheme="http://abeltian.top/tags/Alogrithm/"/>
+    
+  </entry>
   
   <entry>
     <title>凸优化</title>
