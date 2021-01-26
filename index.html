@@ -162,6 +162,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/26/exgcd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/26/exgcd/" class="post-title-link" itemprop="url">扩展欧几里得算法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-26 12:49:27 / 修改时间：13:56:58" itemprop="dateCreated datePublished" datetime="2021-01-26T12:49:27+08:00">2021-01-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="扩展欧几里得算法"><a href="#扩展欧几里得算法" class="headerlink" title="扩展欧几里得算法"></a>扩展欧几里得算法</h3><p>在求最大公约数时，基于一个基本的事实$(a, b) = (b, a - \lfloor \frac{a}{b}\rfloor b) = (b, a\ mod \ b)$，直到$b = 0$，此时$(a, 0) = a$。这种求最大公约数的算法叫做辗转相除法，又叫做欧几里得算法。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (b != <span class="number">0</span>) &#123;</span><br><span class="line">		a %= b;</span><br><span class="line">		swap(a, b);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>裴蜀定理</strong>：假设$a, b$是不全为0的整数，则存在整数$x, y$使得$ax + by = gcd(a, b)$。</p>
+<p>简单证明：<br>$$<br>gcd(a, b) = gcd(b, a\ mod\ b) = gcd(b, a - kb) = gcd(r_1, r_2) = \dots = gcd(r_n, 0)<br>$$<br>其中$r_1, r_2 \dots r_n$都可以写成$x_ia + y_ib$的形式，因此存在$ax + by = gcd(a, b)$</p>
+<p>扩展欧几里得算法在求解最大公约数的同时，计算了一组适于裴蜀定理的系数。<br>递推关系的推导，$(a, b) = (b, a\ mod\ b) = (b, a - \lfloor \frac{a}{b} \rfloor b)$，因此存在四个整数$x, y, x’, y’$使得<br>$$<br>ax + by = bx’ + (a - \lfloor \frac{a}{b} \rfloor b)y’ \\<br>a(x - y’) + b(y - (x’ - \lfloor \frac{a}{b} \rfloor)y’) = 0 \\<br>x = y’, y = x’ - \lfloor \frac{a}{b} \rfloor y’<br>$$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ex_gcd(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span>&amp; x, <span class="keyword">int</span>&amp; y) &#123;</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="number">0</span>) &#123;</span><br><span class="line">        x = <span class="number">1</span>;</span><br><span class="line">        y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> d = exgcd(b, a % b, x, y);</span><br><span class="line">    <span class="keyword">int</span> tmp = x;</span><br><span class="line">    x = y;</span><br><span class="line">    y = tmp - a / b * y;</span><br><span class="line">    <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述算法可以改写为迭代的形式，递推公式<br>$$<br>\left{ \begin{array}{rcl}<br>{\rm{x}} = y’ \\<br>{y = x’ - \lfloor \frac{a}{b} \rfloor y’}<br>\end{array} \right.<br>$$<br>将其写为矩阵的形式</p>
+<p>$$<br>\left( \begin{array}{rcl}<br>x \\<br>y<br>\end{array} \right) = \left( \begin{array}{rcl}<br>0&amp;1 \\<br>1&amp;{ -\lfloor \frac{a}{b} \rfloor}<br>\end{array} \right)\left( \begin{array}{rcl}<br>{x’} \\<br>{y’}<br>\end{array} \right)<br>$$</p>
+<ul>
+<li>初始矩阵为单位矩阵</li>
+<li>$<br>\left( \begin{array}{rcl}<br>x&amp;m\\<br>y&amp;n<br>\end{array} \right) = \left( \begin{array}{rcl}<br>x&amp;m\\<br>y&amp;n<br>\end{array} \right)\left( \begin{array}{rcl}<br>0&amp;1\\<br>1&amp;{ - d}<br>\end{array} \right) = \left( \begin{array}{rcl}<br>m&amp;{x - dm}\\<br>n&amp;{y - dn}<br>\end{array} \right)$</li>
+<li>当b=0时，计算结束，此时x, y为满足裴蜀定理的系数，最大公约数为a。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/25/%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -185,10 +258,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-01-25 22:11:43 / 修改时间：23:29:28" itemprop="dateCreated datePublished" datetime="2021-01-25T22:11:43+08:00">2021-01-25</time>
+              <time title="创建时间：2021-01-25 22:11:43" itemprop="dateCreated datePublished" datetime="2021-01-25T22:11:43+08:00">2021-01-25</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-26 13:46:29" itemprop="dateModified" datetime="2021-01-26T13:46:29+08:00">2021-01-26</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -230,7 +309,7 @@
 <li>对于任意$i, j \in n $，$(A_i * a )\% p \neq (A_j * a )\% p$，因为$(A_i - A_j) * a \% p = 0$，则$A_i - A_j = 0$</li>
 <li>因此$(p - 1)! \equiv (p - 1)! * a^{p - 1}\ (mod\ p) \quad \rightarrow a^{p - 1} \equiv 1 \ mod(\ p)$ </li>
 </ul>
-<h5 id="2-1-扩展欧几里得算法"><a href="#2-1-扩展欧几里得算法" class="headerlink" title="2.1 扩展欧几里得算法"></a>2.1 扩展欧几里得算法</h5><h5 id="2-2快速幂算法"><a href="#2-2快速幂算法" class="headerlink" title="2.2快速幂算法"></a>2.2快速幂算法</h5><h5 id="2-3-线性求逆元"><a href="#2-3-线性求逆元" class="headerlink" title="2.3 线性求逆元"></a>2.3 线性求逆元</h5>
+<h4 id="2-1-扩展欧几里得算法"><a href="#2-1-扩展欧几里得算法" class="headerlink" title="2.1 扩展欧几里得算法"></a>2.1 扩展欧几里得算法</h4><h4 id="2-2快速幂算"><a href="#2-2快速幂算" class="headerlink" title="2.2快速幂算"></a>2.2快速幂算</h4><h4 id="2-3-线性求逆元"><a href="#2-3-线性求逆元" class="headerlink" title="2.3 线性求逆元"></a>2.3 线性求逆元</h4>
       
     </div>
 
@@ -915,98 +994,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/20/leetcode-418/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/20/leetcode-418/" class="post-title-link" itemprop="url">leetcode 418 屏幕可显示句子的数量</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-20 20:46:39" itemprop="dateCreated datePublished" datetime="2020-12-20T20:46:39+08:00">2020-12-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><blockquote>
-<p>给你一个 <code>rows x cols</code> 的屏幕和一个用 <strong>非空</strong> 的单词列表组成的句子，请你计算出给定句子可以在屏幕上完整显示的次数。</p>
-<ul>
-<li>单词不能拆分成两行。</li>
-<li>单词在句子中的顺序必须保持不变。</li>
-<li>在一行中 的两个连续单词必须用一个空格符分隔。</li>
-<li>句子中的单词总量不会超过 100。</li>
-<li>每个单词的长度大于 0 且不会超过 10。</li>
-<li>1 ≤ rows, cols ≤ 20,000.</li>
-</ul>
-</blockquote>
-<h4 id="方法1-暴力模拟-超时）"><a href="#方法1-暴力模拟-超时）" class="headerlink" title="方法1 暴力模拟(超时）"></a>方法1 暴力模拟(超时）</h4><p>​        开始看这道题没什么思路，放置单词这个应该没有什么规律，只能去暴力计算放置字符串的位置，模拟了一下在pos这个位置放置一个句子，下一次放置该句子的位置与行数。无奈被这个数据给卡了[“a”], 20000, 20000，按句子模拟必然超时。</p>
-<h3 id="方法2-动态规划"><a href="#方法2-动态规划" class="headerlink" title="方法2 动态规划"></a>方法2 动态规划</h3><p>​        这道题的trick在于单词数量比较少，不超过100个，并且当单词不能放入当前行时，下一次其一定放置在下一行的行首。这样可以定义两个状态，这样预处理的时间复杂度为$O(mN)$, 计算放置句子个数的过程时间复杂度为$O(N)$<br>$$<br>count[j] \quad 以第j个单词为当前行第一个单词时，放置的句子的个数 \<br>next[j] \quad 以第j个单词为当前行第一个单词时，下一行第一个单词<br>$$</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">wordsTyping</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; sentence, <span class="keyword">int</span> rows, <span class="keyword">int</span> cols)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = sentence.size();</span><br><span class="line">        vector&lt;int&gt; cnt(n, 0), next(n, 0);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; arr;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">string</span> s : sentence) &#123;</span><br><span class="line">            arr.push_back(s.size());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = <span class="number">0</span>, idx = i;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= cols + <span class="number">1</span>;) &#123;</span><br><span class="line">                j += arr[idx] + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (j &gt; cols + <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">if</span> (idx == n - <span class="number">1</span>) tmp++;</span><br><span class="line">                idx = (idx + <span class="number">1</span>) % n;</span><br><span class="line">            &#125;</span><br><span class="line">            cnt[i] = tmp;</span><br><span class="line">            next[i] = idx;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>, idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; ++i) &#123;</span><br><span class="line">            ans += cnt[idx];</span><br><span class="line">            idx = next[idx];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1074,7 +1065,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
