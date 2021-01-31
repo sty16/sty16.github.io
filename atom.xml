@@ -6,7 +6,7 @@
   <link href="http://abeltian.top/atom.xml" rel="self"/>
   
   <link href="http://abeltian.top/"/>
-  <updated>2021-01-26T05:56:58.886Z</updated>
+  <updated>2021-01-31T14:51:14.031Z</updated>
   <id>http://abeltian.top/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>博弈--极大极小博弈树</title>
+    <link href="http://abeltian.top/2021/01/31/%E6%9E%81%E5%A4%A7%E6%9E%81%E5%B0%8F%E5%8D%9A%E5%BC%88%E6%A0%91/"/>
+    <id>http://abeltian.top/2021/01/31/%E6%9E%81%E5%A4%A7%E6%9E%81%E5%B0%8F%E5%8D%9A%E5%BC%88%E6%A0%91/</id>
+    <published>2021-01-31T10:04:02.000Z</published>
+    <updated>2021-01-31T14:51:14.031Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="博弈"><a href="#博弈" class="headerlink" title="博弈"></a>博弈</h3><p>博弈的两种的分类：</p><ul><li><p>动态博弈是指在博弈中，两个参与人有行动的先后顺序，且后行动者能够观察到先行动者所选择的行动。</p></li><li><p>静态博弈是指在博弈中，两个参与人同时选择或不同时选择时，后行动者并不知道先行动者采取什么样的具体行动。</p></li></ul><h4 id="1-极大极小博弈树"><a href="#1-极大极小博弈树" class="headerlink" title="1. 极大极小博弈树"></a>1. 极大极小博弈树</h4><p>​        由于动态博弈参与者的行动有先后顺序，因此参与者的行动构成的为树状结构。</p><p>​        博弈通常是双方对抗，甚至是零和的博弈。也就是说，对对方最有利的决策，反过来就是对我方最不利的局面。在轮到我们做出决策的时候，我们通常希望最大化我们的收益，叫做<strong>极大层，</strong>此时树的节点叫做<strong>极大层节点</strong>；在对手做决策的时候，对手希望最小化我们的收益，叫做<strong>极小层，</strong>此时树的节点叫做<strong>极小层节点</strong>。由于双方是交替做出决策，因此<strong>极大层、极小层</strong>通常是交替出现，这样的数据结构就叫做<strong>极大极小树（Min-Max Tree）</strong>。</p><p><img src="https://i.loli.net/2021/01/31/vz42OSdexlP86EZ.jpg" alt="max-min-tree.png"></p><p><img src="C:\Users\sty\AppData\Roaming\Typora\typora-user-images\max-min-tree.png" alt="preview"></p><p>「必胜态」和「必败态」的概念：</p><ul><li>一个状态为「必胜态」，当且仅当其相邻状态中至少有一个「必败态」。这里相邻的状态的定义为：在当前状态中进行决策的玩家可以到达的所有状态。也就是说，玩家可以选择移动到一个「必败态」，使得对手必败，因此当前状态是必胜的。</li><li>一个状态为「必败态」，当且仅当其相邻的所有状态都是「必胜态」。这里的道理是类似的，如果所有相邻状态都是「必胜态」，那么对手必胜，当前玩家必败。</li></ul><h4 id="2-从已知状态进行搜索"><a href="#2-从已知状态进行搜索" class="headerlink" title="2.从已知状态进行搜索"></a>2.从已知状态进行搜索</h4><p>从已知的最终状态进行倒推之前状态的可能性，考虑已有的可能的几种状态</p><p>leetcode 913 猫和老鼠</p><ul><li>此步老鼠胜利，上一步为老鼠行动，则上一步老鼠为必胜态</li><li>此步老鼠胜利，上一步为猫行动，则上一步猫行动状态的出度减一，(因为猫走该步后不肯能胜利)，只有当猫行动后所有的子状态均为老鼠的必胜态时，即出度为0时，此时猫所处的状态为必败态。</li><li>此步猫胜利，上一步为猫行动，则上一步猫的状态为必胜态。</li><li>此步猫胜利，上一步为老鼠行动，同上。</li></ul><p>状态定义 f[i][j][0]为老鼠处于i，猫处于j，此时为老鼠行动，上一步为猫行动。 老鼠胜利：1， 猫胜利： 2， 平局： 0，最终返回初始状态的值。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;博弈&quot;&gt;&lt;a href=&quot;#博弈&quot; class=&quot;headerlink&quot; title=&quot;博弈&quot;&gt;&lt;/a&gt;博弈&lt;/h3&gt;&lt;p&gt;博弈的两种的分类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;动态博弈是指在博弈中，两个参与人有行动的先后顺序，且后行动者能够观察到先行动者所选择的行</summary>
+      
+    
+    
+    
+    <category term="Alogrithm" scheme="http://abeltian.top/categories/Alogrithm/"/>
+    
+    
+    <category term="Data Structure" scheme="http://abeltian.top/tags/Data-Structure/"/>
+    
+  </entry>
   
   <entry>
     <title>扩展欧几里得算法</title>
@@ -472,30 +498,6 @@
     
     
     <category term="Linux" scheme="http://abeltian.top/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>区间和</title>
-    <link href="http://abeltian.top/2020/12/10/%E5%8C%BA%E9%97%B4%E5%92%8C/"/>
-    <id>http://abeltian.top/2020/12/10/%E5%8C%BA%E9%97%B4%E5%92%8C/</id>
-    <published>2020-12-10T07:17:40.000Z</published>
-    <updated>2020-12-14T14:05:13.762Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/submissions/">leetcode 1477 找两个和为目标值且不重叠的子数组</a></p><p><a href="https://leetcode-cn.com/problems/minimum-operations-to-reduce-x-to-zero/">leetcode 1658 将x减小到0的最小次数</a></p><p><a href="https://leetcode-cn.com/problems/maximum-points-you-can-obtain-from-cards/">leetcode 1423 可获得的最大点数</a></p><p>题目中给出的数据范围$1\le arr[i]\le10^4$，因此找到一段区间和为某一个数值，可以采用双指针的方式，如果当前区域的和大于target，则移动前面的指针，直到区间和小于等于target。如果存在负数或零，则采用前缀和与哈希表的方式。</p><p>对于题目1477 其要找到满足等于给定和的最小的两个不想交的区间，采用dp[j]表示区间右端点小于等于j的最小区间长度。<br>$$<br>dp[j] = \min(dp[j - 1], j - i + 1) \<br>ans = \min(ans, dp[i - 1] + j - i + 1)<br>$$</p> <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minSumOfLengths</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; arr, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = arr.size();</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, sum = <span class="number">0</span>, ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(n, <span class="number">0x3f3f3f3f</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            sum += arr[j];</span><br><span class="line">            <span class="keyword">while</span> (sum &gt; target &amp;&amp; i &lt; j) &#123;</span><br><span class="line">                sum -= arr[i];</span><br><span class="line">                ++i;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (j &gt; <span class="number">0</span>) dp[j] = dp[j - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">                dp[j] = min(dp[j], j - i + <span class="number">1</span>);</span><br><span class="line">                <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    ans = min(ans, dp[i - <span class="number">1</span>] + j - i + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == <span class="number">0x3f3f3f3f</span> ? <span class="number">-1</span> : ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>对于1658题，首先找到一段区间和为x，然后调整两个指针的位置使得两端区间和为x</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minOperations</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size(), ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">        <span class="keyword">int</span> j = n - <span class="number">1</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; sum &lt; x) &#123;</span><br><span class="line">            sum += nums[j];</span><br><span class="line">            --j;</span><br><span class="line">        &#125;</span><br><span class="line">        ++j;</span><br><span class="line">        <span class="keyword">if</span> (sum == x) ans = n - j;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            sum += nums[i];</span><br><span class="line">            <span class="keyword">while</span> (j &lt; n &amp;&amp; sum &gt; x) &#123;</span><br><span class="line">                sum -= nums[j];</span><br><span class="line">                ++j;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (sum == x &amp;&amp; j &gt; i) &#123;</span><br><span class="line">                ans = min(ans, i + <span class="number">1</span> + n - j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == <span class="number">0x3f3f3f3f</span> ? <span class="number">-1</span> : ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/submissions/&quot;&gt;leetcode 1477 找两个和为目标值且不</summary>
-      
-    
-    
-    
-    <category term="Data Structure" scheme="http://abeltian.top/categories/Data-Structure/"/>
-    
-    
-    <category term="区间和" scheme="http://abeltian.top/tags/%E5%8C%BA%E9%97%B4%E5%92%8C/"/>
     
   </entry>
   
