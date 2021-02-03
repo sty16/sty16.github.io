@@ -20,20 +20,22 @@
     var CONFIG = {"hostname":"abeltian.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="快速选择算法题目描述：在未排序的数组中找到第 k 个最大的元素。 12输入: [3,2,1,5,6,4] 和 k &#x3D; 2输出: 5  ​        快速选择算法本质上是对快速排序算法进行优化，快速排序算法是将数组进行划分，从数组中任选一个元素，调整数组使得左边元素都比它小，其4右侧元素都比它大。通过递归调用快速排序对左侧序列与右侧序列进行排序。而快速选择算法对左侧区间和右侧区间的数据">
+  <meta name="description" content="主席树（可持久化线段树）问题描述：  给定N个数（int范围内），一共M次询问，每次都要询问区间[[l,r]的第k大的数。 其中N, M, l, r均不超过$2\times10^5$，保证询问有答案  ​        主席树本名可持久化线段树，也就是说，主席树是基于线段树发展而来的一种数据结构。其前缀”可持久化”意在给线段树增加一些历史点来维护历史数据，使得我们能在较短时间内查询历史数据，图示如">
 <meta property="og:type" content="article">
-<meta property="og:title" content="快速选择算法">
-<meta property="og:url" content="http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:title" content="主席树">
+<meta property="og:url" content="http://abeltian.top/2021/02/03/%E4%B8%BB%E5%B8%AD%E6%A0%91/index.html">
 <meta property="og:site_name" content="TYS的博客">
-<meta property="og:description" content="快速选择算法题目描述：在未排序的数组中找到第 k 个最大的元素。 12输入: [3,2,1,5,6,4] 和 k &#x3D; 2输出: 5  ​        快速选择算法本质上是对快速排序算法进行优化，快速排序算法是将数组进行划分，从数组中任选一个元素，调整数组使得左边元素都比它小，其4右侧元素都比它大。通过递归调用快速排序对左侧序列与右侧序列进行排序。而快速选择算法对左侧区间和右侧区间的数据">
+<meta property="og:description" content="主席树（可持久化线段树）问题描述：  给定N个数（int范围内），一共M次询问，每次都要询问区间[[l,r]的第k大的数。 其中N, M, l, r均不超过$2\times10^5$，保证询问有答案  ​        主席树本名可持久化线段树，也就是说，主席树是基于线段树发展而来的一种数据结构。其前缀”可持久化”意在给线段树增加一些历史点来维护历史数据，使得我们能在较短时间内查询历史数据，图示如">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-18T03:32:15.000Z">
-<meta property="article:modified_time" content="2020-12-18T03:43:34.345Z">
+<meta property="og:image" content="https://cdn.luogu.com.cn/upload/pic/20234.png">
+<meta property="article:published_time" content="2021-02-03T02:28:14.000Z">
+<meta property="article:modified_time" content="2021-02-03T10:40:25.226Z">
 <meta property="article:author" content="tys">
 <meta property="article:tag" content="Data Structure">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.luogu.com.cn/upload/pic/20234.png">
 
-<link rel="canonical" href="http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/">
+<link rel="canonical" href="http://abeltian.top/2021/02/03/%E4%B8%BB%E5%B8%AD%E6%A0%91/">
 
 
 <script id="page-configurations">
@@ -46,7 +48,7 @@
   };
 </script>
 
-  <title>快速选择算法 | TYS的博客</title>
+  <title>主席树 | TYS的博客</title>
   
 
 
@@ -168,7 +170,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/03/%E4%B8%BB%E5%B8%AD%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -181,7 +183,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          快速选择算法
+          主席树
         </h1>
 
         <div class="post-meta">
@@ -192,16 +194,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-12-18 11:32:15 / 修改时间：11:43:34" itemprop="dateCreated datePublished" datetime="2020-12-18T11:32:15+08:00">2020-12-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
+              <time title="创建时间：2021-02-03 10:28:14 / 修改时间：18:40:25" itemprop="dateCreated datePublished" datetime="2021-02-03T10:28:14+08:00">2021-02-03</time>
             </span>
 
           
@@ -215,12 +208,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="快速选择算法"><a href="#快速选择算法" class="headerlink" title="快速选择算法"></a>快速选择算法</h4><p>题目描述：在未排序的数组中找到第 <strong>k</strong> 个最大的元素。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,2,1,5,6,4] 和 k &#x3D; 2</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure>
+        <h2 id="主席树（可持久化线段树）"><a href="#主席树（可持久化线段树）" class="headerlink" title="主席树（可持久化线段树）"></a>主席树（可持久化线段树）</h2><p>问题描述：</p>
+<blockquote>
+<p>给定N个数（int范围内），一共M次询问，每次都要询问区间[[l,r]的第k大的数。 其中N, M, l, r均不超过$2\times10^5$，保证询问有答案</p>
+</blockquote>
+<p>​        主席树本名可持久化线段树，也就是说，主席树是基于线段树发展而来的一种数据结构。其前缀”可持久化”意在给线段树增加一些历史点来维护历史数据，使得我们能在较短时间内查询历史数据，图示如下。</p>
+<p><img src="https://cdn.luogu.com.cn/upload/pic/20234.png" alt="https://cdn.luogu.com.cn/upload/pic/20234.png"></p>
+<p>当每插入一个数据时，会修改$logn$个节点，因为主席树的左右子树节点编号不能够计算得到，而是需要记录下来。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> N = <span class="number">200010</span></span><br><span class="line"><span class="keyword">int</span> rt[N]                  <span class="comment">// 记录插入第i个数后的根节点</span></span><br><span class="line"><span class="keyword">int</span> ls[N &lt;&lt; <span class="number">5</span>], rs[N &lt;&lt; <span class="number">5</span>] <span class="comment">// 记录左儿子，右儿子</span></span><br><span class="line"><span class="keyword">int</span> sum[N &lt;&lt; <span class="number">5</span>]            <span class="comment">// 记录当前节点区间的元素个数</span></span><br></pre></td></tr></table></figure>
 
-<p>​        快速选择算法本质上是对快速排序算法进行优化，快速排序算法是将数组进行划分，从数组中任选一个元素，调整数组使得左边元素都比它小，其4右侧元素都比它大。通过递归调用快速排序对左侧序列与右侧序列进行排序。而快速选择算法对左侧区间和右侧区间的数据个数与需要寻找的第K大的数字进行比较，选择答案所存在的区间，舍弃了另一个不需要的区间，使算法复杂度降低到$ O(n+ n/2 + n/4 +…)$期望为$O(n)$，但是在最坏的情况下每次选择的都是最大或者最小值，算法时间复杂度为$O(n^2)$。</p>
-<p>针对题目数据，未加入随机数时间为56ms，加入随机数为16ms</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size();</span><br><span class="line">        <span class="keyword">return</span> quick_select(nums, <span class="number">0</span>, n - <span class="number">1</span>, n - k + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">quick_select</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> randPos = l + rand() % (r - l + <span class="number">1</span>);</span><br><span class="line">        swap(nums[l], nums[randPos]);</span><br><span class="line">        <span class="keyword">int</span> pivot = nums[l];</span><br><span class="line">        <span class="keyword">int</span> i = l, j = r;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[j] &gt;= pivot) --j;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[i] = nums[j];</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[i] &lt; pivot) ++i;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[j] = nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        nums[i] = pivot;</span><br><span class="line">        <span class="keyword">int</span> idx = i - l + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (idx == k) <span class="keyword">return</span> pivot;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> idx &lt; k ? quick_select(nums, i + <span class="number">1</span>, r, k - idx) : quick_select(nums, l, i - <span class="number">1</span>, k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><p>将数组复制一份，进行排序，去掉重复的数字离散化。</p>
+</li>
+<li><p>以离散化后的数组为基础建立一个全零的线段树，称为基础主席树</p>
+</li>
+<li><p>对原数据中每一个[1,i]区间统计，有序地插入新节点，i每增加1，就会多一个数，仅需对主席树对应的节点增加1即可</p>
+</li>
+<li><p>对于查询[l, r]中第k小值的操作，找到[l, r]对应的根节点，按照线段树操作的方法即可</p>
+</li>
+</ul>
+<p>建立基础主席树</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> &amp;u, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">	u = ++tot;</span><br><span class="line">	<span class="keyword">if</span> (l == r) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	build(ls[u], l, mid);</span><br><span class="line">	build(rs[u], mid + <span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>向主席树中加入元素</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">modify</span><span class="params">(<span class="keyword">int</span> pre, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> cur = ++tot;</span><br><span class="line">	ls[cur] = ls[pre]; rs[cur] = rs[pre]; sum[cur] = sum[pre] + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span> (l == r) <span class="keyword">return</span> cur;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (x &lt;= mid) ls[cur] = modify(ls[cur], l, mid);</span><br><span class="line">    <span class="keyword">else</span> rs[cur] = modify(rs[cur], mid + <span class="number">1</span>, r);</span><br><span class="line">	<span class="keyword">return</span> cur;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查询区间第k大，注意区间下标是从1开始</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, x = sum[ls[v]] - sum[ls[u]];</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="keyword">if</span> (k &lt;= x) ans = query(ls[u], ls[v], l, mid, k);</span><br><span class="line">    <span class="keyword">else</span> ans = query(rs[u], rs[v], mid + <span class="number">1</span>, r, k - x);</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -240,13 +256,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/17/%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/" rel="prev" title="最小的k个数">
-      <i class="fa fa-chevron-left"></i> 最小的k个数
+    <a href="/2021/02/02/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="prev" title="数据库">
+      <i class="fa fa-chevron-left"></i> 数据库
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/12/18/%E8%BF%9B%E7%A8%8B/" rel="next" title="进程">
-      进程 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -305,7 +318,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">快速选择算法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%B8%AD%E6%A0%91%EF%BC%88%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E7%BA%BF%E6%AE%B5%E6%A0%91%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">主席树（可持久化线段树）</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
