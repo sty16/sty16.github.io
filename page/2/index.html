@@ -162,6 +162,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/28/%E6%A0%91%E4%B8%8E%E5%9B%BE%E4%B8%8A%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92II/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/28/%E6%A0%91%E4%B8%8E%E5%9B%BE%E4%B8%8A%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92II/" class="post-title-link" itemprop="url">树与图上的动态规划II</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-28 20:37:20 / 修改时间：21:29:44" itemprop="dateCreated datePublished" datetime="2020-12-28T20:37:20+08:00">2020-12-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>洛谷P2014 选课</p>
+<blockquote>
+<p>在大学里每个学生，为了达到一定的学分，必须从很多课程里选择一些课程来学习，在课程里有些课程必须在某些课程之前学习，如高等数学总是在其它课程之前学习。现在有 NNN 门功课，每门课有个学分，每门课有一门或没有直接先修课（若课程 a 是课程 b 的先修课即只有学完了课程 a，才能学习课程 b）。一个学生要从这些课程里选择 MMM 门课程学习，问他能获得的最大学分是多少？</p>
+</blockquote>
+<p>每门课只有一门先修课， 因此该图结构为森林，假设没有选修课的父节点都指向零，因此如果要选择子节点，则必须要选择父节点，因为父节点为选修课的要求。</p>
+<p>转换为树上背包问题<br>$$<br>dp[i][j] = max(dp[i][j], dp[i][j - k] + dp[x][k]) \quad x为i的子节点。<br>$$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> f[<span class="number">305</span>][<span class="number">305</span>], head[<span class="number">305</span>], tot, scores[<span class="number">305</span>], sz[<span class="number">305</span>];</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> to, nxt;</span><br><span class="line">&#125; edges[<span class="number">305</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">	edges[++tot] = &#123;v, head[u]&#125;;</span><br><span class="line">	head[u] = tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">	sz[u] = <span class="number">1</span>;</span><br><span class="line">	f[u][<span class="number">1</span>] = scores[u];</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = edges[i].nxt) &#123;</span><br><span class="line">		<span class="keyword">int</span> v = edges[i].to;</span><br><span class="line">		dfs(v);</span><br><span class="line">		sz[u] += sz[v];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = sz[u]; j &gt;= <span class="number">1</span>; --j) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> k = min(j - <span class="number">1</span>, sz[v]); k &gt;= <span class="number">0</span>; --k) &#123;</span><br><span class="line">				f[u][j] = max(f[u][j], f[u][j - k] + f[v][k]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n, m;</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">	<span class="keyword">int</span> k, s;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">		<span class="built_in">cin</span> &gt;&gt; k &gt;&gt; scores[i];</span><br><span class="line">		add(k, i);</span><br><span class="line">	&#125;</span><br><span class="line">	dfs(<span class="number">0</span>);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; f[<span class="number">0</span>][++m] &lt;&lt; <span class="built_in">endl</span>;  <span class="comment">//注意包含了0节点，因此要多选一门</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/27/%E6%A0%91%E5%BD%A2%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -880,105 +955,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/15/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/15/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/" class="post-title-link" itemprop="url">DTMF信号检测与识别</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-15 22:17:52 / 修改时间：23:26:51" itemprop="dateCreated datePublished" datetime="2020-12-15T22:17:52+08:00">2020-12-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">信号处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="DTMF信号的检测与识别"><a href="#DTMF信号的检测与识别" class="headerlink" title="DTMF信号的检测与识别"></a>DTMF信号的检测与识别</h3><h3 id="1-程序设计思路与框图"><a href="#1-程序设计思路与框图" class="headerlink" title="1. 程序设计思路与框图"></a>1. 程序设计思路与框图</h3><h4 id="1-1-FFT直接计算"><a href="#1-1-FFT直接计算" class="headerlink" title="1.1 FFT直接计算"></a>1.1 FFT直接计算</h4><p>利用FFT计算输入的信号的DFT频域信息，并找到两个峰值频率点，从而检测DTMF信号。</p>
-<ul>
-<li><p>数据预处理，作业给定的为.wav文件，其中数据为16bit的short类型，文件指针偏移40个字节的位置记录了wav数据块的字节数，调用read函数将之后的数据读入到数组中。</p>
-</li>
-<li><p>编写类FFTMethod，调用第一次作业编写的时域基2DFT对音频信号做FFT变换。找到频域中两个峰值对应的数字角频率，从而计算得到模拟角频率，找到对应的DTMF信号</p>
-</li>
-<li><p>程序框图</p>
-<img src="https://i.loli.net/2020/12/15/qX4PvIlB36bjSLc.png" alt="image-20201215223342850.png" height=400>
-
-</li>
-</ul>
-<h4 id="1-2-Goertzel-算法"><a href="#1-2-Goertzel-算法" class="headerlink" title="1.2 Goertzel 算法"></a>1.2 Goertzel 算法</h4><p>计算FFT包含了信号整个频域的信息，而我们只关注DTMF信号的八个特定频率，因此算法存在冗余。在FFT中如果我们只关注某一个特定的数字角频率，$X[k] = \sum_{n = 0}^{N- 1}x[m]W_n^{m -N}$，其可以视为$x[n]$通过冲激响应为$W_N^{-nk}$的LTI系统在N时刻的取值。第k个频点对应的差分方程为：<br>$$<br>V_k[n] = 2cos(\omega_k)V_k[n - 1] - V_k[n-2] + x[n] \<br>X_k[n] = V_k[n] - W_N^k[n - 1], v[-1] = v[-2] = 0<br>$$<br>其本质是一个动态规划的过程，由递推关系可以得到n时刻的状态，从而确定该频点的FFT。得到八个特定频点的FFT值后，选择两个峰值，从而确定DTMF信号。</p>
-<img src="https://i.loli.net/2020/12/15/WPjz2ItDx5vhKuM.png" alt="image-20201215224401308.png" height=400>
-
-<h4 id="1-3一串DTMF信号的识别"><a href="#1-3一串DTMF信号的识别" class="headerlink" title="1.3一串DTMF信号的识别"></a>1.3一串DTMF信号的识别</h4><p>下图为一串DTMF信号的时域图像，可以看到其中包含了15个DTMF信号，我们要做的工作是确定每一个信号的起始于结束位置，直接使用强度值进行判断存在较大的误差，因此选择滑动窗取平均的方式。程序中选择滑动窗大小为64，计算信号每个点对应的滑动窗内的平均能量，并与阈值作比较，从而确定每一个信号的起始结束位置。之后将每一段信号采用上述的两种方法进行信号判断</p>
-<p><img src="https://i.loli.net/2020/12/15/mMfArlcUnZO8sPT.png" alt="image-20201215224445627.png"></p>
-<ul>
-<li>程序框图</li>
-</ul>
-<img src="https://i.loli.net/2020/12/15/5Olr6ciBUpfImsC.png" alt="image-20201215225103976.png" height=400>
-
-<h3 id="2-两种算法的结果与复杂度比较"><a href="#2-两种算法的结果与复杂度比较" class="headerlink" title="2.两种算法的结果与复杂度比较"></a>2.两种算法的结果与复杂度比较</h3><p>实验结果：</p>
-<p><img src="https://i.loli.net/2020/12/15/oUfzLdDCkjwVQKH.png" alt="image-20201215225340386.png"></p>
-<p>复杂度分析：</p>
-<ul>
-<li><p>FFT方法采用DFT计算了所有的频点信息，时间复杂度为$O(nlogn)$，寻找峰值的复杂度为O(n)，总的时间复杂度为$O(nlogn) + O(n)$</p>
-</li>
-<li><p>Goertzel方法只计算特定的8个频点，并采用差分方程的形式递推计算，时间复杂度为O(n)</p>
-</li>
-<li><p>FFT方法需要存储所有的频域信息，空间复杂度为$O(n)$， Goertzel方法在递推过程中只需要V[i-1]、V[i-2]这两个状态， 空间复杂度为$O(1)$</p>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1050,7 +1026,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
