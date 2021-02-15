@@ -162,6 +162,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/06/%E5%B9%B6%E6%9F%A5%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/06/%E5%B9%B6%E6%9F%A5%E9%9B%86/" class="post-title-link" itemprop="url">并查集</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-06 11:44:37 / 修改时间：12:40:25" itemprop="dateCreated datePublished" datetime="2021-01-06T11:44:37+08:00">2021-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h3><p>并查集可以说在算法中应用很广泛，最主要用来判断图的连通性的问题。之前做的题很少包含按秩合并，最多就是按照两个连通分量的大小进行合并。今天第一次碰到了按照秩进行合并的并查集问题，leetcode 399 除法求值，描述如下：</p>
+<blockquote>
+<p>给你一个变量对数组 equations 和一个实数值数组 values 作为已知条件，其中 equations[i] = [Ai, Bi] 和 values[i] 共同表示等式 Ai / Bi = values[i] 。每个 Ai 或 Bi 是一个表示单个变量的字符串。</p>
+<p>另有一些以数组 queries 表示的问题，其中 queries[j] = [Cj, Dj] 表示第 j 个问题，请你根据已知条件找出 Cj / Dj = ? 的结果作为答案。</p>
+<p>输入：equations = [[“a”,”b”],[“b”,”c”]], values = [2.0,3.0], queries = [[“a”,”c”],[“b”,”a”],[“a”,”e”],[“a”,”a”],[“x”,”x”]]<br>输出：[6.00000,0.50000,-1.00000,1.00000,-1.00000]</p>
+</blockquote>
+<h4 id="1-深度优先搜索"><a href="#1-深度优先搜索" class="headerlink" title="1.深度优先搜索"></a>1.深度优先搜索</h4><p>因为数据规模不大，a / b = 2，可以表示为a到b有一条权值为2的边，b到a有一条权值为0.5的边，因此对于每一个查询，可以采用深度优先搜索的方式进行查找，记录路径与当前的乘积，时间复杂度为O(n)。</p>
+<h4 id="2-并查集方法"><a href="#2-并查集方法" class="headerlink" title="2.并查集方法"></a>2.并查集方法</h4><ul>
+<li> a / b = 2.0 说明a 与 b在一个集合中，a = 2b</li>
+</ul>
+<p><img src="https://i.loli.net/2021/01/06/SZOacQF1yg4PWdR.png" alt="image-20210106122627884.png"></p>
+<ul>
+<li><p>带路径压缩的查询<br>$$<br>w[x] = \frac{v[x]}{v[father} \<br>w[x] = \frac{v[x]}{v[fa[x]]} * \frac{v[fa[x]]}{v[father]} \<br>w[x] = w[x] * w[fa[x]]<br>$$<br> <img src="https://i.loli.net/2021/01/06/GD4CrWi1mtBJKR2.png" alt="image-20210106123132585.png"></p>
+</li>
+<li><p>按秩合并</p>
+<p>合并两个节点的父亲，要更新两个父亲之间的权值。<br>$$<br>w[fx] = \frac{v[fx]}{v[fy]} \<br>w[fx] = \frac{v[x]}{w[x]} / \frac{v[y]}{w[y]} \<br>$$</p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2021/01/06/Z3SrnKfFtEJzlVw.png" alt="image-20210106123812935.png"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; fa;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; w;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    UnionFind(<span class="keyword">int</span> _n) : n(_n), fa(n, <span class="number">0</span>), w(n, <span class="number">1.0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) fa[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (x != fa[x]) &#123;</span><br><span class="line">            <span class="keyword">int</span> father = find(fa[x]);</span><br><span class="line">            w[x] *= w[fa[x]];</span><br><span class="line">            fa[x] = father;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fa[x];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">double</span> weight)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> fx = find(x), fy = find(y);</span><br><span class="line">        <span class="keyword">if</span> (fx == fy) <span class="keyword">return</span>;</span><br><span class="line">        fa[fx] = fy;</span><br><span class="line">        w[fx] = weight * w[y] / w[x];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">isConnected</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> fx = find(x), fy = find(y);</span><br><span class="line">        <span class="keyword">if</span> (fx == fy) &#123;</span><br><span class="line">            <span class="keyword">return</span> w[x] / w[y];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; <span class="title">calcEquation</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt;&amp; equations, <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;&amp; values, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt;&amp; queries)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt; mp;</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>, n = equations.size();</span><br><span class="line">        <span class="function">UnionFind <span class="title">uf</span><span class="params">(<span class="number">2</span> * n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="built_in">string</span> s = equations[i][<span class="number">0</span>], t = equations[i][<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (!mp.count(s)) mp[s] = idx++;</span><br><span class="line">            <span class="keyword">if</span> (!mp.count(t)) mp[t] = idx++;</span><br><span class="line">            uf.unite(mp[s], mp[t], values[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> p : queries) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!mp.count(p[<span class="number">0</span>]) || !mp.count(p[<span class="number">1</span>])) ans.push_back(<span class="number">-1.0</span>);</span><br><span class="line">            <span class="keyword">else</span> ans.push_back(uf.isConnected(mp[p[<span class="number">0</span>]], mp[p[<span class="number">1</span>]]));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/29/%E6%A0%91%E4%B8%8E%E5%9B%BE%E4%B8%8A%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92III/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -884,84 +974,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/17/%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/17/%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/" class="post-title-link" itemprop="url">最小的k个数</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-12-17 23:00:13 / 修改时间：23:49:22" itemprop="dateCreated datePublished" datetime="2020-12-17T23:00:13+08:00">2020-12-17</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/">leetcode 373 查找和最小的K对数字</a></p>
-<p>题目描述：给定两个以升序排列的整形数组 nums1 和 nums2, 以及一个整数 k。定义一对值 (u,v)，其中第一个元素来自 nums1，第二个元素来自 nums2。找到和最小的 k 对数字 (u1,v1), (u2,v2) … (uk,vk)。</p>
-<h4 id="做题思路"><a href="#做题思路" class="headerlink" title="做题思路"></a>做题思路</h4><p>由于题目中没有给定数据范围，开始以为是双指针问题，采用贪心策略，但是举了两个例子，指针的移动无法采用贪心的方法，如[1, 3, 100]与[2, 10, 11]， 第二组为(2, 3)，第三组为(1, 10)，第一个数组的指针出现了回退，因此贪心不可行。</p>
-<h5 id="1-暴力做法"><a href="#1-暴力做法" class="headerlink" title="1.暴力做法"></a>1.暴力做法</h5><p>​        枚举数组1与数组2所有可能的组合，并采用<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/">箭指offer 40 最小的k个数</a>的最大堆的方法，维护最小的k对数字，时间复杂度$O(n^2logk)$，运行时间1232ms，勉强过了。</p>
-<h5 id="2-利用数组的排序信息"><a href="#2-利用数组的排序信息" class="headerlink" title="2.利用数组的排序信息"></a>2.利用数组的排序信息</h5><p>​        在暴力做法中完全没有利用到题目中给出的数组为升序排列这个信息，还是以[1, 3, 100]与[2, 10, 11]为例，开始我们将$(nums1[0], nums2[j]) j = 1,2\dots n$放入最小堆中，如果当前堆中弹出的为$(nums1[i], nums2[j])$，那么则将$(nums1[i + 1], nums2[j])$放入到最小堆中。</p>
-<p>数据结构<code>pair&lt;pair&lt;int, int&gt;, int&gt;</code>，分别记录nums1的值、下标， nums2的值。</p>
-<p>最小堆 <code>priority_queue&lt;pair&lt;pair&lt;int, int&gt;, int&gt;, vector&lt;pair&lt;pair&lt;int, int&gt;, int&gt;&gt;, cmp&gt;</code></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cmp</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span> <span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&amp;a, <span class="keyword">const</span> <span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&amp; b)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.first.first + a.second &gt; b.first.first + b.second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; kSmallestPairs(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums2, <span class="keyword">int</span> k) &#123;</span><br><span class="line">        <span class="keyword">int</span> m = nums1.size(), n = nums2.size();</span><br><span class="line">        <span class="keyword">if</span> (m == <span class="number">0</span> || n == <span class="number">0</span>) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        <span class="built_in">priority_queue</span>&lt;<span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;, <span class="built_in">vector</span>&lt;<span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&gt;, cmp&gt; pq;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            pq.push(&#123;&#123;nums1[<span class="number">0</span>], <span class="number">0</span>&#125;, nums2[i]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; ans;</span><br><span class="line">        <span class="keyword">while</span> (!pq.empty() &amp;&amp; cnt &lt; k) &#123;</span><br><span class="line">            <span class="keyword">auto</span> [a, b] = pq.top();</span><br><span class="line">            pq.pop();</span><br><span class="line">            ans.push_back(&#123;a.first, b&#125;);</span><br><span class="line">            <span class="keyword">int</span> idx = a.second;</span><br><span class="line">            <span class="keyword">if</span> (idx + <span class="number">1</span> &lt; m) pq.push(&#123;&#123;nums1[idx + <span class="number">1</span>], idx + <span class="number">1</span>&#125;, b&#125;);</span><br><span class="line">            ++cnt;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1033,7 +1045,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1046,7 +1058,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
