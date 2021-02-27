@@ -162,6 +162,343 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/20/leetcode-418/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/20/leetcode-418/" class="post-title-link" itemprop="url">leetcode 418 屏幕可显示句子的数量</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-20 20:46:39" itemprop="dateCreated datePublished" datetime="2020-12-20T20:46:39+08:00">2020-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><blockquote>
+<p>给你一个 <code>rows x cols</code> 的屏幕和一个用 <strong>非空</strong> 的单词列表组成的句子，请你计算出给定句子可以在屏幕上完整显示的次数。</p>
+<ul>
+<li>单词不能拆分成两行。</li>
+<li>单词在句子中的顺序必须保持不变。</li>
+<li>在一行中 的两个连续单词必须用一个空格符分隔。</li>
+<li>句子中的单词总量不会超过 100。</li>
+<li>每个单词的长度大于 0 且不会超过 10。</li>
+<li>1 ≤ rows, cols ≤ 20,000.</li>
+</ul>
+</blockquote>
+<h4 id="方法1-暴力模拟-超时）"><a href="#方法1-暴力模拟-超时）" class="headerlink" title="方法1 暴力模拟(超时）"></a>方法1 暴力模拟(超时）</h4><p>​        开始看这道题没什么思路，放置单词这个应该没有什么规律，只能去暴力计算放置字符串的位置，模拟了一下在pos这个位置放置一个句子，下一次放置该句子的位置与行数。无奈被这个数据给卡了[“a”], 20000, 20000，按句子模拟必然超时。</p>
+<h3 id="方法2-动态规划"><a href="#方法2-动态规划" class="headerlink" title="方法2 动态规划"></a>方法2 动态规划</h3><p>​        这道题的trick在于单词数量比较少，不超过100个，并且当单词不能放入当前行时，下一次其一定放置在下一行的行首。这样可以定义两个状态，这样预处理的时间复杂度为$O(mN)$, 计算放置句子个数的过程时间复杂度为$O(N)$<br>$$<br>count[j] \quad 以第j个单词为当前行第一个单词时，放置的句子的个数 \<br>next[j] \quad 以第j个单词为当前行第一个单词时，下一行第一个单词<br>$$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">wordsTyping</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; sentence, <span class="keyword">int</span> rows, <span class="keyword">int</span> cols)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = sentence.size();</span><br><span class="line">        vector&lt;int&gt; cnt(n, 0), next(n, 0);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; arr;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">string</span> s : sentence) &#123;</span><br><span class="line">            arr.push_back(s.size());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = <span class="number">0</span>, idx = i;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= cols + <span class="number">1</span>;) &#123;</span><br><span class="line">                j += arr[idx] + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (j &gt; cols + <span class="number">1</span>) <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">if</span> (idx == n - <span class="number">1</span>) tmp++;</span><br><span class="line">                idx = (idx + <span class="number">1</span>) % n;</span><br><span class="line">            &#125;</span><br><span class="line">            cnt[i] = tmp;</span><br><span class="line">            next[i] = idx;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>, idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; ++i) &#123;</span><br><span class="line">            ans += cnt[idx];</span><br><span class="line">            idx = next[idx];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/19/%E6%89%8B%E5%86%99%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/19/%E6%89%8B%E5%86%99%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/" class="post-title-link" itemprop="url">手写字符识别</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-19 21:26:51" itemprop="dateCreated datePublished" datetime="2020-12-19T21:26:51+08:00">2020-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="计算机视觉-computer-Vision"><a href="#计算机视觉-computer-Vision" class="headerlink" title="计算机视觉(computer Vision)"></a>计算机视觉(computer Vision)</h3><h3 id="1-全连接与CNN模型比较"><a href="#1-全连接与CNN模型比较" class="headerlink" title="1.全连接与CNN模型比较"></a>1.全连接与CNN模型比较</h3><p>​        好久没弄过深度学习的东西了，上次写得时候应该是大三上学期，一转眼就是两年了。感觉自己的记忆力好差啊，之前搞得那些已经是忘得一干二净了。这次的任务是采用Omniglot数据集进行手写数字的识别，该数据及包含了50中字母系统中共计1623种字符，每个字符有20个样本，部分样本如下图所示。</p>
+<p><img src="https://i.loli.net/2020/12/19/ESTwN5m9IBesoLg.png" alt="image-20201219215358508.png"></p>
+<p>​        我采用的深度学习框架是pytorch，当用户使用DataLoader加载自定义数据时，需要继承Dataset这个类，并重写其中的两个方法。传入参数为图片路径与标签的字典。采用DataLoader()加载数据，batch_size大小设置为64。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span>(<span class="params">self, index</span>):</span></span><br><span class="line">	<span class="keyword">raise</span> NotImplementedError</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__len__</span>(<span class="params">self</span>):</span></span><br><span class="line">	<span class="keyword">raise</span> NotImplementedError</span><br></pre></td></tr></table></figure>
+
+<p>定义包含一个隐层的全连接模型, 训练50个epoch，训练集上的loss与测试集上的accuracy如下图所示，全连接模型测试集的准群率在40%左右。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model = nn.Sequential(</span><br><span class="line">    nn.Linear(<span class="number">784</span>, <span class="number">2048</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Linear(<span class="number">2048</span>, <span class="number">50</span>),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/19/M9dejr8lyckFviV.png" alt="image-20201219221535989.png"></p>
+<p>定义包含四个卷积层与两个全连接层的CNN网络， 训练50次，测试集上的最高准确率为0.8389，相比于全连接模型，准确率大大提升。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">    x = self.conv1(x)</span><br><span class="line">    x = self.conv2(x)</span><br><span class="line">    x = self.conv3(x)</span><br><span class="line">    x = self.conv4(x)</span><br><span class="line">    x = x.view(x.size(<span class="number">0</span>), -<span class="number">1</span>)  <span class="comment"># (batch_size, size)</span></span><br><span class="line">    output = self.out(x)</span><br><span class="line">    <span class="keyword">return</span> output</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/19/CGVWcfxUHilDn4Q.png" alt="image-20201219221339503.png"></p>
+<h3 id="2-尝试与对比"><a href="#2-尝试与对比" class="headerlink" title="2.尝试与对比"></a>2.尝试与对比</h3><h4 id="2-1数据集的划分"><a href="#2-1数据集的划分" class="headerlink" title="2.1数据集的划分"></a>2.1数据集的划分</h4><p>​    将类别设置为20类，每个类别训练集为15个样本，测试集为3个样本，结果如下图所示，分类准确率相比于50类明显提升，最高为0.9314。适当的减少分类类别可以提升模型的分类准确率。</p>
+<p><img src="https://i.loli.net/2020/12/20/8wzl6Vv7ZYMJci2.png" alt="image-20201220110750985.png"></p>
+<h4 id="2-2改变模型结构"><a href="#2-2改变模型结构" class="headerlink" title="2.2改变模型结构"></a>2.2改变模型结构</h4><p>相比于示例给出的卷积网络，再加入一卷积层，结果如下，分类准确率变化不大。</p>
+<p><img src="https://i.loli.net/2020/12/20/q9AlUmfcGSTjJ1y.png" alt="image-20201220111552338.png"></p>
+<h4 id="2-3-不同的优化器比较"><a href="#2-3-不同的优化器比较" class="headerlink" title="2.3 不同的优化器比较"></a>2.3 不同的优化器比较</h4><p>上述训练都是采用的SGD优化器，改为Adagrad优化器的结果如下，loss相比于SGD优化器，没有较大的波动。准确率相比于SGD也有较大的提升，最高为0.8647。</p>
+<p><img src="https://i.loli.net/2020/12/20/PLR1cd3UGbqIifS.png" alt="image-20201220112546931.png"></p>
+<p>采用Adam优化器结果如下所示，其收敛速度慢于Adagrad优化器，训练500个epoch结果如下。测试集上的分类准确率为0.8777</p>
+<p><img src="https://i.loli.net/2020/12/20/F3fbyivgxdrC7em.png" alt="image-20201220114010564.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E8%BF%9B%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/18/%E8%BF%9B%E7%A8%8B/" class="post-title-link" itemprop="url">进程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-18 16:13:22" itemprop="dateCreated datePublished" datetime="2020-12-18T16:13:22+08:00">2020-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 19:39:49" itemprop="dateModified" datetime="2020-12-22T19:39:49+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="1-进程的概念"><a href="#1-进程的概念" class="headerlink" title="1.进程的概念"></a>1.进程的概念</h4><p>程序(program)是一个存储在磁盘上某个目录中的可执行文件，内核使用exec函数将程序读入内存，并执行程序。</p>
+<p>程序执行的实例被称为进程(process), unix系统确保每个进程都有一个唯一的数字标识符，称为进程ID</p>
+<h4 id="2-进程环境"><a href="#2-进程环境" class="headerlink" title="2.进程环境"></a>2.进程环境</h4><p>进程命令行参数，当执行一个程序时，在调用main函数前先调用一个特殊的启动例程，启动例程从内核获得命令行参数和环境变量值，之后调用main函数。POSIX.1要求argv[argc]是一个空指针，因此在参数处理的循环中可以改写为</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; argv[i] != <span class="literal">NULL</span>; ++i)</span><br></pre></td></tr></table></figure>
+
+<p>环境表: 环境表是一个字符指针数组，其中每个指针为一个以’\0’为结尾的C字符串地址，全局变量environ环境指针为该指针数组的地址。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> **environ;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/18/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">快速选择算法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-18 11:32:15 / 修改时间：11:43:34" itemprop="dateCreated datePublished" datetime="2020-12-18T11:32:15+08:00">2020-12-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="快速选择算法"><a href="#快速选择算法" class="headerlink" title="快速选择算法"></a>快速选择算法</h4><p>题目描述：在未排序的数组中找到第 <strong>k</strong> 个最大的元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,2,1,5,6,4] 和 k &#x3D; 2</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure>
+
+<p>​        快速选择算法本质上是对快速排序算法进行优化，快速排序算法是将数组进行划分，从数组中任选一个元素，调整数组使得左边元素都比它小，其4右侧元素都比它大。通过递归调用快速排序对左侧序列与右侧序列进行排序。而快速选择算法对左侧区间和右侧区间的数据个数与需要寻找的第K大的数字进行比较，选择答案所存在的区间，舍弃了另一个不需要的区间，使算法复杂度降低到$ O(n+ n/2 + n/4 +…)$期望为$O(n)$，但是在最坏的情况下每次选择的都是最大或者最小值，算法时间复杂度为$O(n^2)$。</p>
+<p>针对题目数据，未加入随机数时间为56ms，加入随机数为16ms</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size();</span><br><span class="line">        <span class="keyword">return</span> quick_select(nums, <span class="number">0</span>, n - <span class="number">1</span>, n - k + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">quick_select</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> randPos = l + rand() % (r - l + <span class="number">1</span>);</span><br><span class="line">        swap(nums[l], nums[randPos]);</span><br><span class="line">        <span class="keyword">int</span> pivot = nums[l];</span><br><span class="line">        <span class="keyword">int</span> i = l, j = r;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[j] &gt;= pivot) --j;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[i] = nums[j];</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[i] &lt; pivot) ++i;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[j] = nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        nums[i] = pivot;</span><br><span class="line">        <span class="keyword">int</span> idx = i - l + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (idx == k) <span class="keyword">return</span> pivot;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> idx &lt; k ? quick_select(nums, i + <span class="number">1</span>, r, k - idx) : quick_select(nums, l, i - <span class="number">1</span>, k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/17/%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -717,99 +1054,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/09/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/09/%E7%BA%BF%E6%AE%B5%E6%A0%91/" class="post-title-link" itemprop="url">线段树</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-09 19:55:27" itemprop="dateCreated datePublished" datetime="2020-12-09T19:55:27+08:00">2020-12-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-14 22:05:13" itemprop="dateModified" datetime="2020-12-14T22:05:13+08:00">2020-12-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>每个叶子节点为最小的分割区间，即为数组存储的值。</p>
-<p>假设树的高度为k，0,1,2$\dots$k，另n为区间个数，则有$2^{k - 1} &lt; n \le 2^k$，整棵树的节点个数有$2^{k + 1} - 1$个，通常线段树空间大小为4 * n</p>
-<p>leetcode 1109 航班预订统计</p>
-<p>leetcode 307 区间和检索-数组可修改</p>
-<p>leetcode 308 二维区域和检索—可变</p>
-<h4 id="线段树建树"><a href="#线段树建树" class="headerlink" title="线段树建树"></a>线段树建树</h4><p>数组下标同树状数组相同，都是从1开始</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == r) &#123;</span><br><span class="line">        d[p] = a[l];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    build(l, m, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">    build(m + <span class="number">1</span>, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">    d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树区间查询"><a href="#线段树区间查询" class="headerlink" title="线段树区间查询"></a>线段树区间查询</h4><p>l，r为查询区间，cl，cr为当前区间的左右边界。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(cl &gt; r || cr &lt; l) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) <span class="keyword">return</span> d[p];</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(l &lt;= mid) sum += query(l, r, p &lt;&lt; <span class="number">1</span>, cl, mid);</span><br><span class="line">        <span class="keyword">if</span>(r &gt; mid) sum += quert(l, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>s, mid + <span class="number">1</span>, cr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树的点更新-O-nlogn"><a href="#线段树的点更新-O-nlogn" class="headerlink" title="线段树的点更新$O(nlogn)$"></a>线段树的点更新$O(nlogn)$</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> k, <span class="keyword">int</span> v, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p)</span> </span>&#123;  <span class="comment">//update(k, v, 1, n, 1)</span></span><br><span class="line">    <span class="keyword">if</span>(l == r) a[k] += v, d[k] += v;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(k &lt;= mid) &#123;</span><br><span class="line">            update(k, v, l, mid, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            update(k, v, mid + <span class="number">1</span>, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树区间修改与懒惰标记"><a href="#线段树区间修改与懒惰标记" class="headerlink" title="线段树区间修改与懒惰标记"></a>线段树区间修改与懒惰标记</h4><p>对于一个区间$[l, r]$，如果每次更新区间中的每个值，那么时间复杂度为$O(nlogn)$，为了提高更新效率，采用了mark进行标记。在递归更新过程中，当当前节点区间为待更新区间的真子集时，不再向下更新。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_down</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    mark[p &lt;&lt; <span class="number">1</span>] += mark[p];</span><br><span class="line">    mark[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>] += mark[p];</span><br><span class="line">    d[p &lt;&lt; <span class="number">1</span>] += mark[p] * (len - len / <span class="number">2</span>);</span><br><span class="line">    d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>] += mark[p] * len / <span class="number">2</span>;</span><br><span class="line">    mark[p] = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt; cr || r &lt; cl) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) &#123;</span><br><span class="line">        d[p] += (cr - cl + <span class="number">1</span>) * val;</span><br><span class="line">        <span class="keyword">if</span>(cl &gt; cr) mark[p] += d;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="keyword">int</span> mid = cl + (cr - cl) / <span class="number">2</span>;</span><br><span class="line">        push_down(p, cr - cl + <span class="number">1</span>);</span><br><span class="line">        update(l, r, val, cl, mid, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        update(l, r, val, mid + <span class="number">1</span>, cr, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">        d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="线段树区间查询-包含懒惰标记"><a href="#线段树区间查询-包含懒惰标记" class="headerlink" title="线段树区间查询 包含懒惰标记"></a>线段树区间查询 包含懒惰标记</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt; cr || r &lt; cl) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) <span class="keyword">return</span> d[p];</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	    <span class="keyword">if</span>(mark[p]) push_down(p, cr - cl + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> query(l, r, cl, mid, p &lt;&lt; <span class="number">1</span>) + query(l, r, mid + <span class="number">1</span>, cr, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -877,20 +1125,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

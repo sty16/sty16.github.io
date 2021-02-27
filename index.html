@@ -162,6 +162,281 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/27/%E8%B7%B3%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/27/%E8%B7%B3%E8%A1%A8/" class="post-title-link" itemprop="url">跳表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-27 11:46:47 / 修改时间：21:49:17" itemprop="dateCreated datePublished" datetime="2021-02-27T11:46:47+08:00">2021-02-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="跳表-Probabilistic-Alternative-to-Balanced-Trees"><a href="#跳表-Probabilistic-Alternative-to-Balanced-Trees" class="headerlink" title="跳表(Probabilistic Alternative to Balanced Trees)"></a>跳表(Probabilistic Alternative to Balanced Trees)</h3><p>​        跳跃表是一种有序的数据结构，它通过在每个节点中维持多个指向其他节点的指针，从而达到快速访问节点的目的。跳表的期望空间复杂度为$O(n)$，跳表的查询，插入和删除操作的期望时间复杂度都为$O(logn)$。</p>
+<p>​        链表加多级索引的结构就是跳表。跳表的每一层都是一个有序链表，每层位于第i层的节点有p的概率出现在第i+1层，p为常数。</p>
+<p><img src="https://i.loli.net/2021/02/27/F6PO2UqsjEpv4hJ.png" alt="search_path_on_skiplist.png"></p>
+<h3 id="复杂度证明"><a href="#复杂度证明" class="headerlink" title="复杂度证明"></a>复杂度证明</h3><h5 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a><strong>空间复杂度</strong></h5><p>​        第一层的期望值为$n$, 第二层的期望值为$np$, 第三层的期望值为$np^2$，因此空间复杂度的期望值为$\sum\limits_{i = 0}^{+\infty}np^i=\frac{n}{1 - p}$。因为p为常数，因此跳表期望的空间复杂度为$O(n)$。</p>
+<p><strong>时间复杂度</strong></p>
+<p>跳表最后一层节点的个数为$\frac{1}{p}$，因为再上一层的期望值为1(无意义)。因此层数m为<br>$$<br>np^{m - 1}=\frac{1}{p} \\<br>(\frac{1}{p})^m=n \\<br>m = \log_{\frac{1}{p}}n<br>$$<br>​        跳表skiplist的平均查找长度，查找长度指的是查找路径上跨越的跳数，查找过程中的比较次数等于查找长度加1（每比较一次要么向下一层，要么到本层的右侧节点)。每个节点在进行插入的时候，它的层数是由随机函数randomLevel()计算出来的，随机的计算不依赖于其它的节点，每个节点是独立同分布的，每次插入过程都是完全独立的。</p>
+<p>​        为了计算查找长度，我们将逆向还原查找过程，从右下方第一层最后到达的那个节点开始，沿着查找路径向左，向上回溯。假设当回溯到某个节点的时候，它才被插入，这虽然相当于改变了节点的插入顺序，但从统计上不影响整个skiplist的形成结构。</p>
+<p>如果某一个节点有上层节点的话，则我们需要向上走，整个查找过程类似楼梯的形状，<strong>每个节点第一被访问一定是位于其最顶层</strong>。</p>
+<ul>
+<li>如果节点x有第i+1，那么我们需要向上走，这种情况概率为p</li>
+<li>如果节点没有第i+1层指针，那么我们需要向左走，这种情况的概率为1-p</li>
+</ul>
+<p>用C(k)表示向上攀爬k个层级所需要走过的平均查找路径长度，因此有<br>$$<br>C(k) = (1 - p)*(C(k) + 1) + p * (C(k - 1) + 1) \\<br>C(k) = \frac{1}{p} + C(k - 1) \\<br>C(k) = \frac{k}{p}<br>$$<br>n个节点跳表的层数为$\log_{\frac{1}{p}}n$， 因此所需时间为$\frac{\log_{\frac{1}{p}}n}{p}$，即平均时间复杂度为$O(\log n)$</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>数据结构SkipListNode，skiplist真正有数据只有下面一层的数据节点，每个节点的后继就是level[0],</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SkipListNode</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">	<span class="built_in">vector</span>&lt;SkipListNode *&gt; level;</span><br><span class="line">	SkipListNode (<span class="keyword">int</span> _val, <span class="keyword">int</span> sz=<span class="number">32</span>) : val(_val), level(sz, <span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Skiplist</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    SkipListNode *head, *tail;</span><br><span class="line">    <span class="keyword">int</span> level, length;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> MAXL = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> P = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> S = <span class="number">0xFFFF</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> PS = S / <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    Skiplist() &#123;</span><br><span class="line">        level = length = <span class="number">0</span>;</span><br><span class="line">        tail = <span class="keyword">new</span> SkipListNode(INT_MAX, <span class="number">0</span>);</span><br><span class="line">        head = <span class="keyword">new</span> SkipListNode(INT_MAX);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; MAXL; ++i) &#123; </span><br><span class="line">        	head-&gt;level[i] = tail;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">SkipListNode* <span class="title">find</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        SkipListNode *p = head;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (p-&gt;level[i] &amp;&amp; p-&gt;level[i]-&gt;val &lt; val) &#123;</span><br><span class="line">                p = p-&gt;level[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p-&gt;level[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        SkipListNode *p = find(target);</span><br><span class="line">        <span class="keyword">return</span> p-&gt;val == target;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;SkipListNode *&gt; <span class="title">update</span><span class="params">(MAXL)</span></span>;</span><br><span class="line">        SkipListNode *p = head;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (p-&gt;level[i] &amp;&amp; p-&gt;level[i]-&gt;val &lt; val) &#123;</span><br><span class="line">                p = p-&gt;level[i];</span><br><span class="line">            &#125;</span><br><span class="line">            update[i] = p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> lv = randomLevel();</span><br><span class="line">        <span class="keyword">if</span> (lv &gt; level) &#123;</span><br><span class="line">            lv = ++level;</span><br><span class="line">            update[lv - <span class="number">1</span>] = head; </span><br><span class="line">        &#125;</span><br><span class="line">        SkipListNode *newNode = <span class="keyword">new</span> SkipListNode(val, lv);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = lv - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            p = update[i];</span><br><span class="line">            newNode-&gt;level[i] = p-&gt;level[i];</span><br><span class="line">            p-&gt;level[i] = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">        ++length;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">erase</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;SkipListNode *&gt; <span class="title">update</span><span class="params">(MAXL + <span class="number">1</span>)</span></span>;</span><br><span class="line">        SkipListNode *p = head;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (p-&gt;level[i] &amp;&amp; p-&gt;level[i]-&gt;val &lt; val) &#123;</span><br><span class="line">                p = p-&gt;level[i];</span><br><span class="line">            &#125;</span><br><span class="line">            update[i] = p;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p-&gt;level[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;val != val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; level; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (update[i]-&gt;level[i] != p) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            update[i]-&gt;level[i] = p-&gt;level[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (level &gt; <span class="number">0</span> &amp;&amp; head-&gt;level[level - <span class="number">1</span>] == tail) --level;</span><br><span class="line">        --length;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">randomLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> lv = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (lv &lt; MAXL &amp;&amp; (rand() &amp; S) &lt; PS) ++lv;</span><br><span class="line">        <span class="keyword">return</span> lv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a target="_blank" rel="noopener" href="http://zhangtielei.com/posts/blog-redis-skiplist.html">http://zhangtielei.com/posts/blog-redis-skiplist.html</a></p>
+<p><a href="ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf">ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf</a></p>
+<p><a target="_blank" rel="noopener" href="https://oi-wiki.org/ds/skiplist/#_4">https://oi-wiki.org/ds/skiplist/#_4</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/" class="post-title-link" itemprop="url">JAVA反射</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-24 20:51:45 / 修改时间：22:48:49" itemprop="dateCreated datePublished" datetime="2021-02-24T20:51:45+08:00">2021-02-24</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="JAVA-反射"><a href="#JAVA-反射" class="headerlink" title="JAVA 反射"></a>JAVA 反射</h3><p>反射是为了解决运行期，对某个对象一无所知的情况下，调用其方法，JVM为每一个加载的class创建一个Class类型的实例，并关联起来。</p>
+<p>通过Class实例获取class信息的方法称为反射(Reflection)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/24/JAVA/JAVA-Spring/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/24/JAVA/JAVA-Spring/" class="post-title-link" itemprop="url">JAVA_Spring</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-24 20:17:40 / 修改时间：20:40:49" itemprop="dateCreated datePublished" datetime="2021-02-24T20:17:40+08:00">2021-02-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="IOC-Inversion-of-Control控制反转"><a href="#IOC-Inversion-of-Control控制反转" class="headerlink" title="IOC(Inversion of Control控制反转)"></a>IOC(Inversion of Control控制反转)</h3><p>应用本身不负责依赖对象的创建和维护，依赖对象的创建和维护是由外部容器负责的称为控制反转。</p>
+<p>IOC容器管理的对象称为Bean，Bean是由Spring容器初始化，装配及管理的对象。</p>
+<p><img src="https://i.loli.net/2021/02/24/pkob3n8iRSvwZmW.jpg" alt="IOC_DI.JPG"></p>
+<h3 id="DI-Dependency-Injection依赖注入"><a href="#DI-Dependency-Injection依赖注入" class="headerlink" title="DI(Dependency Injection依赖注入)"></a>DI(Dependency Injection依赖注入)</h3><h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/22/JAVA/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/22/JAVA/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-22 20:03:14 / 修改时间：20:20:48" itemprop="dateCreated datePublished" datetime="2021-02-22T20:03:14+08:00">2021-02-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h3><p>设计模式本质上是面向对象设计原则的实际运用。</p>
+<h4 id="1-1设计模式分类"><a href="#1-1设计模式分类" class="headerlink" title="1.1设计模式分类"></a>1.1设计模式分类</h4><ul>
+<li>创建型模式</li>
+<li>结构型模式</li>
+<li>行为型模式</li>
+</ul>
+<h4 id="UML-类图"><a href="#UML-类图" class="headerlink" title="UML 类图"></a>UML 类图</h4>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/15/Miller-Rabin%E7%B4%A0%E6%95%B0%E6%8E%A2%E6%B5%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -612,386 +887,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/26/exgcd/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/26/exgcd/" class="post-title-link" itemprop="url">扩展欧几里得算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-01-26 12:49:27 / 修改时间：13:56:58" itemprop="dateCreated datePublished" datetime="2021-01-26T12:49:27+08:00">2021-01-26</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="扩展欧几里得算法"><a href="#扩展欧几里得算法" class="headerlink" title="扩展欧几里得算法"></a>扩展欧几里得算法</h3><p>在求最大公约数时，基于一个基本的事实$(a, b) = (b, a - \lfloor \frac{a}{b}\rfloor b) = (b, a\ mod \ b)$，直到$b = 0$，此时$(a, 0) = a$。这种求最大公约数的算法叫做辗转相除法，又叫做欧几里得算法。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (b != <span class="number">0</span>) &#123;</span><br><span class="line">		a %= b;</span><br><span class="line">		swap(a, b);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>裴蜀定理</strong>：假设$a, b$是不全为0的整数，则存在整数$x, y$使得$ax + by = gcd(a, b)$。</p>
-<p>简单证明：<br>$$<br>gcd(a, b) = gcd(b, a\ mod\ b) = gcd(b, a - kb) = gcd(r_1, r_2) = \dots = gcd(r_n, 0)<br>$$<br>其中$r_1, r_2 \dots r_n$都可以写成$x_ia + y_ib$的形式，因此存在$ax + by = gcd(a, b)$</p>
-<p>扩展欧几里得算法在求解最大公约数的同时，计算了一组适于裴蜀定理的系数。<br>递推关系的推导，$(a, b) = (b, a\ mod\ b) = (b, a - \lfloor \frac{a}{b} \rfloor b)$，因此存在四个整数$x, y, x’, y’$使得<br>$$<br>ax + by = bx’ + (a - \lfloor \frac{a}{b} \rfloor b)y’ \\<br>a(x - y’) + b(y - (x’ - \lfloor \frac{a}{b} \rfloor)y’) = 0 \\<br>x = y’, y = x’ - \lfloor \frac{a}{b} \rfloor y’<br>$$</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ex_gcd(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span>&amp; x, <span class="keyword">int</span>&amp; y) &#123;</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="number">0</span>) &#123;</span><br><span class="line">        x = <span class="number">1</span>;</span><br><span class="line">        y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> d = exgcd(b, a % b, x, y);</span><br><span class="line">    <span class="keyword">int</span> tmp = x;</span><br><span class="line">    x = y;</span><br><span class="line">    y = tmp - a / b * y;</span><br><span class="line">    <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述算法可以改写为迭代的形式，递推公式<br>$$<br>\left{ \begin{array}{rcl}<br>{\rm{x}} = y’ \\<br>{y = x’ - \lfloor \frac{a}{b} \rfloor y’}<br>\end{array} \right.<br>$$<br>将其写为矩阵的形式</p>
-<p>$$<br>\left( \begin{array}{rcl}<br>x \\<br>y<br>\end{array} \right) = \left( \begin{array}{rcl}<br>0&amp;1 \\<br>1&amp;{ -\lfloor \frac{a}{b} \rfloor}<br>\end{array} \right)\left( \begin{array}{rcl}<br>{x’} \\<br>{y’}<br>\end{array} \right)<br>$$</p>
-<ul>
-<li>初始矩阵为单位矩阵</li>
-<li>$<br>\left( \begin{array}{rcl}<br>x&amp;m\\<br>y&amp;n<br>\end{array} \right) = \left( \begin{array}{rcl}<br>x&amp;m\\<br>y&amp;n<br>\end{array} \right)\left( \begin{array}{rcl}<br>0&amp;1\\<br>1&amp;{ - d}<br>\end{array} \right) = \left( \begin{array}{rcl}<br>m&amp;{x - dm}\\<br>n&amp;{y - dn}<br>\end{array} \right)$</li>
-<li>当b=0时，计算结束，此时x, y为满足裴蜀定理的系数，最大公约数为a。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/25/%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/25/%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83/" class="post-title-link" itemprop="url">乘法逆元</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-01-25 22:11:43" itemprop="dateCreated datePublished" datetime="2021-01-25T22:11:43+08:00">2021-01-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-09 12:03:46" itemprop="dateModified" datetime="2021-02-09T12:03:46+08:00">2021-02-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="乘法逆元"><a href="#乘法逆元" class="headerlink" title="乘法逆元"></a>乘法逆元</h3><h4 id="1-逆元的定义"><a href="#1-逆元的定义" class="headerlink" title="1. 逆元的定义"></a>1. 逆元的定义</h4><p>如果一个线性同余方程$ax \equiv 1 (mod\ b)$，则称$x$为$a\ mod\ b$的逆元，记作$a^{-1}$。</p>
-<p>模运算规则与基本四则运算类似，但是除法例外。在ACM竞赛中，除法取模的运算要用到求逆元，从而得到$(a / b) \% c = (a * x) \% c$</p>
-<p>证明：已知$(b * x) \% c = 1$，假设$(a / b) \% c = y_1, (a * x) \% c = y_2$</p>
-<p>则</p>
-<ul>
-<li>$a / b = k_1*c + y_1\quad(1)$ </li>
-<li>$a*x = k_2 * c + y_2\quad(2)$</li>
-<li>$(1) -(2)$$\quad \rightarrow \quad a/b - a*x = (k_1 - k_2)*c + (y_1 - y_2)$ </li>
-<li>左右同时乘以b $\quad \rightarrow \quad$  $a - a * x * b = k * c * b + (y1 - y2) * b$ </li>
-<li>左右模上c $\quad \rightarrow \quad (y1 - y2) * b \% c = 0$</li>
-<li>因为$b \neq 0$, 所以$y_1 = y_2$</li>
-</ul>
-<h4 id="2-求逆元"><a href="#2-求逆元" class="headerlink" title="2. 求逆元"></a>2. 求逆元</h4><p>费马小定理，若p为素数，且$gcd(a, p) = 1$，则$a^{p - 1} \equiv 1 (mod\ p)$</p>
-<p>证明：</p>
-<ul>
-<li>构造一个序列$A={1, 2, 3, \dots p - 1}$， 这个序列有如下的性质:</li>
-<li>$\mathop{\Pi}\limits_{i = 1}^{n}A_i = \mathop{\Pi}\limits_{i = 1}^{n}(A_i \times a)$</li>
-<li>对于任意$i, j \in n $，$(A_i * a )\% p \neq (A_j * a )\% p$，因为$(A_i - A_j) * a \% p = 0$，则$A_i - A_j = 0$</li>
-<li>因此$(p - 1)! \equiv (p - 1)! * a^{p - 1}\ (mod\ p) \quad \rightarrow a^{p - 1} \equiv 1 \ mod(\ p)$ </li>
-</ul>
-<h4 id="2-1-扩展欧几里得算法"><a href="#2-1-扩展欧几里得算法" class="headerlink" title="2.1 扩展欧几里得算法"></a>2.1 扩展欧几里得算法</h4><p><a href="https://abeltian.top/2021/01/26/exgcd/">扩展欧几里得算法</a></p>
-<p>求解同余方程$ax \equiv 1 (mod\ b)$的最小整数解</p>
-<p>假设采用扩展欧几里得算法求得一组$x_0, y_0$满足$ax_0 +by_0 = gcd(a, b)$，则该方程的任意解可以表示为$x = x_0 + bt, y = y_0-at$，对于任意t均成立，最小整数解可以表示为$x = ((x_0\ mod\ b) + b) mod\ b$</p>
-<h4 id="2-2快速幂算法"><a href="#2-2快速幂算法" class="headerlink" title="2.2快速幂算法"></a>2.2快速幂算法</h4><p>根据费马小定理，$1 \equiv a^{p -1} (mod\ p)$，因此$x = a^{p - 2}$，可以采用快速幂算法进行计算。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> a, <span class="keyword">long</span> <span class="keyword">long</span> b)</span> </span>&#123;</span><br><span class="line">    ll ret = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (b) &#123;</span><br><span class="line">        <span class="keyword">if</span> (b &amp; <span class="number">1</span>) &#123;</span><br><span class="line">            ret = (ret * a) % mod;</span><br><span class="line">        &#125;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        a = (a * a) % mod;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-3-线性求逆元"><a href="#2-3-线性求逆元" class="headerlink" title="2.3 线性求逆元"></a>2.3 线性求逆元</h4><p>求出$1, 2, \dots, n$中每个数关于p的逆元。</p>
-<ul>
-<li>显然$1{-1} \equiv 1 (mod\ p)$</li>
-<li>令$k = \lfloor\frac{p}{i} \rfloor, j = p\ mod\ i$, 因此有$p = ki + j$，在模p的意义下就有$ki + j \equiv 0\ (mod\ p)$</li>
-<li>左右同乘以$i^{-1}, j^{-1}$，有$kj^{-1} + i^{-1}=0$</li>
-<li>$i^{-1}=-kj^{-1} = (p - k)j^{-1}$</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> expr mod = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">ll fac[N], R[N], inv[N];</span><br><span class="line">fac[<span class="number">0</span>] = fac[<span class="number">1</span>] = R[<span class="number">0</span>] = R[<span class="number">1</span>] = inv[<span class="number">0</span>] = inv[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">	fac[i] = <span class="number">1L</span>L * fac[i - <span class="number">1</span>] * i % mod;</span><br><span class="line">    inv[i] = <span class="number">1L</span>L * (mod - mod / i) * inv[mod % i] % mod;</span><br><span class="line">    R[i] = <span class="number">1L</span>L * R[i - <span class="number">1</span>] * inv[i] % mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">comb</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (n &lt; m) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1L</span>L * fac[n] * R[m] % mod * R[n - m] % mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-4-线性求任意n个数的逆元"><a href="#2-4-线性求任意n个数的逆元" class="headerlink" title="2.4 线性求任意n个数的逆元"></a>2.4 线性求任意n个数的逆元</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">int fac[N], rf[N];</span><br><span class="line">void init(int n) &#123;</span><br><span class="line">	f[0] &#x3D; 1;</span><br><span class="line">	for (int i &#x3D; 1; i &lt;&#x3D; n; ++i) fac[i] &#x3D; 1LL * fac[i - 1] * i % mod;</span><br><span class="line">	rf[n] &#x3D; qpow(fac[n], mod - 2);</span><br><span class="line">	for (int i &#x3D; n - 1; i &gt;&#x3D; 0; --i) rf[i] &#x3D; 1LL * rf[i + 1] * (i + 1) % mod;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ll comb(int n, int m) &#123;</span><br><span class="line">	if (n &lt; m || m &lt; 0) return 0;</span><br><span class="line">	return 1LL * fac[n] * rf[m] % mod * rf[n - m] % mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/18/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/18/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">洗牌算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-01-18 16:25:26 / 修改时间：17:20:42" itemprop="dateCreated datePublished" datetime="2021-01-18T16:25:26+08:00">2021-01-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="洗牌算法"><a href="#洗牌算法" class="headerlink" title="洗牌算法"></a>洗牌算法</h3><blockquote>
-<p>给你一个整数数组 nums ，设计算法来打乱一个没有重复元素的数组。</p>
-<p>int [] shuffle()返回数据随机打乱后的结果。</p>
-</blockquote>
-<h4 id="打乱的概念"><a href="#打乱的概念" class="headerlink" title="打乱的概念"></a>打乱的概念</h4><ul>
-<li><p>随机打乱后的结果能够覆盖所有的情况，比如数组元素的个数为n，那么打乱后的结果应该覆盖$n!$种所有可能的结果</p>
-</li>
-<li><p>所有结果等概率出现</p>
-</li>
-</ul>
-<h5 id="方法一-暴力"><a href="#方法一-暴力" class="headerlink" title="方法一 暴力"></a>方法一 暴力</h5><p>暴力的方法就是模拟，假设数组中的每个元素为一个小球，我们将其放入袋子中，进行不放回的抽取，直到袋子中没有小球，我们将抽取出来的小球按顺序排列得到一个排列组合，这个排列组合出现的概率为$\frac{1}{n!}$，因此这个 数组的每个排列组合都是等概的，算法时间复杂度$O(n2)$，vector&lt;int&gt;的erase()删除操作是O(n)的。</p>
-<p>对于某一个排列组合其出现概率为<br>$$<br>\mathop{\Pi}\limits_{k = 0}^{n - 1}\frac{1}{n - k} = \frac{1}{n!}<br>$$</p>
-<h5 id="方法二-Fisher-Yates算法"><a href="#方法二-Fisher-Yates算法" class="headerlink" title="方法二 Fisher-Yates算法"></a>方法二 Fisher-Yates算法</h5><p>Fisher-Yates 洗牌算法跟暴力算法很像。在每次迭代中，生成一个当前数组末尾指针下标的随机整数。接下来，将当前元素和随机选出的下标所指的元素互相交换，这步模拟了每次从袋子里面摸一个元素的过程。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">shuffle</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">int</span> pos = rand() % (i + <span class="number">1</span>);</span><br><span class="line">        swap(arr[i], arr[pos]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/12/%E5%87%B8%E4%BC%98%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/12/%E5%87%B8%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">凸优化</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-01-12 16:12:52 / 修改时间：21:31:22" itemprop="dateCreated datePublished" datetime="2021-01-12T16:12:52+08:00">2021-01-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%87%B8%E4%BC%98%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">凸优化</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="凸优化"><a href="#凸优化" class="headerlink" title="凸优化"></a>凸优化</h3><p>leetcode 1515 服务中心的最佳位置</p>
-<blockquote>
-<p>一家快递公司希望在新城市建立新的服务中心。公司统计了该城市所有客户在二维地图上的坐标，并希望能够以此为依据为新的服务中心选址：使服务中心 到所有客户的欧几里得距离的总和最小 。给你一个数组 positions ，其中 positions[i] = [xi, yi] 表示第 i 个客户在二维地图上的位置，返回到所有客户的 欧几里得距离的最小总和 </p>
-</blockquote>
-<p>该问题本质上优化的函数如下：<br>$$<br>f(x_c, y_c) = \sum\limits_{i = 0}^{n - 1}\sqrt{(x_c - x_i)^2 + (y_c - y_i)^2}<br>$$<br>其中$(x_c, y_c)$为服务器中心的位置，其可以使$f(x_c, y_c)$取得最小值。该函数是凸函数，凸优化问题的局部最优解就是全局最优解。</p>
-<h4 id="1-凸集"><a href="#1-凸集" class="headerlink" title="1.凸集"></a>1.凸集</h4><p>$C$是凸集，如果对于任意的$x,y\in C$和任意的$\theta \in \mathbb{R}$且满足$0 \le \theta \le 1$时，$\theta x + (1 - \theta) y$恒成立。</p>
-<h4 id="2-凸函数"><a href="#2-凸函数" class="headerlink" title="2.凸函数"></a>2.凸函数</h4><h5 id="2-1-凸函数定义"><a href="#2-1-凸函数定义" class="headerlink" title="2.1 凸函数定义"></a>2.1 凸函数定义</h5><p>定义在$\mathbb{R}^n \rightarrow \mathbb{R}$上的函数$f$是凸函数， 当且仅当它的定义域$\mathbb{D}(f)$是一个凸集，且对于任意的$x, y \in \mathbb{D}$和$ 0 \le \theta \le 1$， $f(\theta x + (1 - \theta)y) \le \theta f(x) + (1 - \theta)f(y)$恒成立。</p>
-<p><img src="https://i.loli.net/2021/01/12/HC9usSizqw75WJ3.png" alt="convex.jpg"></p>
-<h5 id="2-2-凸函数的一阶充要条件"><a href="#2-2-凸函数的一阶充要条件" class="headerlink" title="2.2 凸函数的一阶充要条件"></a>2.2 凸函数的一阶充要条件</h5><p>假设定义在$\mathbb{R}^n \rightarrow \mathbb{R}$上的函数$f$可微， 即对于所有的$x \in \mathbb{D}(f)$，梯度$\nabla f(x)$均存在，则函数$f$是凸函数当且仅当函数定义域$\mathbb{D}(f)$是一个凸集合，且对于所有$x, y \in \mathbb{D}(f)$均满足：<br>$$<br>f(y) \ge f(x) + \nabla f(x)^T(y - x)<br>$$</p>
-<h5 id="2-3-凸函数的二阶充要条件"><a href="#2-3-凸函数的二阶充要条件" class="headerlink" title="2.3 凸函数的二阶充要条件"></a>2.3 凸函数的二阶充要条件</h5><p>记凸函数$f$的一阶导数和二阶导数分别为$g$和$H$<br>$$<br>\nabla f = \begin{bmatrix}  \frac{\partial f}{\partial x_1} \\ \frac{\partial f}{\partial x_2}\\ \vdots \\ \frac{\partial f}{\partial x_n} \end{bmatrix} \quad<br>H = \nabla^2f = \begin{bmatrix} \frac{\partial^2f}{\partial x_1^2} &amp; \frac{\partial^2f}{\partial x_1 \partial x_2}  &amp;  \cdots &amp;  \frac{\partial^2f}{\partial x_1 \partial x_n} \\ \frac{\partial^2f}{\partial x_2 \partial x_1}  &amp;  \frac{\partial^2f}{\partial x_2^2}  &amp;  \cdots  &amp; \frac{\partial^2f}{\partial x_2 \partial x_n} \\ \vdots &amp;  \vdots  &amp;  \ddots &amp;  \vdots \\ \frac{\partial^2f}{\partial x_n \partial x_1} &amp;   \frac{\partial^2df}{\partial x_n \partial x_2}  &amp; \cdots &amp;  \frac{\partial^2f}{\partial x_n^2} \end{bmatrix}<br>$$<br>$f$在$x_k$处的二阶泰勒展开为<br>$$<br>f(x) = f(x_k) + \nabla f^T (x - x_k) + \frac{1}{2!}(x - x_k)H(x_k)(x - x_k) + o^n<br>$$<br>假设定义在$\mathbb{R}^n \rightarrow \mathbb{R}$上的函数$f$二阶可微， 即对于所有的$x \in \mathbb{D}(f)$，海森矩阵$\nabla^2 f(x)$均存在，则函数$f$是凸函数当且仅当函数定义域$\mathbb{D}(f)$是一个凸集合，且对于所有$x, y \in \mathbb{D}(f)$均满足$H$为半正定矩阵。</p>
-<h4 id="3-凸优化"><a href="#3-凸优化" class="headerlink" title="3.凸优化"></a>3.凸优化</h4><p>可以证明本题优化的函数$f$为$\mathbb{R}^2$的上凸函数。</p>
-<ul>
-<li><p>梯度下降</p>
-</li>
-<li><p>模拟退火</p>
-</li>
-<li><p>爬山算法</p>
-</li>
-<li><p>三分搜索</p>
-</li>
-</ul>
-<h5 id="3-1-梯度下降"><a href="#3-1-梯度下降" class="headerlink" title="3.1 梯度下降"></a>3.1 梯度下降</h5><p>梯度下降算法，梯度下降是机器学习中常用的一种求局部最小值的算法，对于给定点$(x, y)$，它的梯度方向是函数值上升最快的方向，因此负梯度为函数值下降的最快的方向，$-\nabla f = (-\frac{\partial f}{\partial x}, -\frac{\partial f}{\partial y})$，我们从一个初始点$(x_{start}, y_{start})$开始迭代， 每次令<br>$$<br>x \prime = x - \alpha \cdot \frac{\partial f}{\partial x} \\<br>y \prime = y - \alpha \cdot \frac{\partial f}{\partial y}<br>$$</p>
-<ol>
-<li><p>初始点$(x_{start}, y_{start})=(\frac{\sum\limits_{i =0}^{n-1}x_i}{n},\frac{\sum\limits_{i =0}^{n-1}y_i}{n})$</p>
-</li>
-<li><p>学习率$\alpha = 1$</p>
-</li>
-<li><p>学习率衰减$\eta = 0.001$</p>
-</li>
-<li><p>当$(x \prime, y\prime)$与$(x, y)$的距离小于$10^{-7}$时结束迭代。</p>
-</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">getMinDistSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; positions)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = positions.size();</span><br><span class="line">        <span class="keyword">double</span> eps = <span class="number">1e-7</span>, alpha = <span class="number">1</span>, decay = <span class="number">0.001</span>;</span><br><span class="line">        <span class="keyword">double</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> p : positions) &#123;</span><br><span class="line">            x += p[<span class="number">0</span>];</span><br><span class="line">            y += p[<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        x = x / n;</span><br><span class="line">        y = y / n;</span><br><span class="line">        <span class="keyword">auto</span> getDis = [&amp;](<span class="keyword">double</span> x, <span class="keyword">double</span> y) &#123;</span><br><span class="line">            <span class="keyword">double</span> ans = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">auto</span> p : positions) &#123;</span><br><span class="line">                ans += <span class="built_in">sqrt</span>((x - p[<span class="number">0</span>]) * (x - p[<span class="number">0</span>]) + (y - p[<span class="number">1</span>]) * (y - p[<span class="number">1</span>]));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="keyword">double</span> prex = x, prey = y;</span><br><span class="line">            <span class="keyword">double</span> dx = <span class="number">0</span>, dy = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">auto</span> p : positions) &#123;</span><br><span class="line">                <span class="keyword">double</span> base = max(<span class="number">1e-9</span>, <span class="built_in">sqrt</span>((x - p[<span class="number">0</span>]) * (x - p[<span class="number">0</span>]) + (y - p[<span class="number">1</span>]) * (y - p[<span class="number">1</span>])));</span><br><span class="line">                dx += (x - p[<span class="number">0</span>]) / base;</span><br><span class="line">                dy += (y - p[<span class="number">1</span>]) / base;</span><br><span class="line">            &#125;</span><br><span class="line">            x -= alpha * dx;</span><br><span class="line">            y -= alpha * dy;</span><br><span class="line">            alpha = alpha * (<span class="number">1</span> - decay);</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">sqrt</span>((x - prex) * (x - prex) + (y - prey) * (y - prey)) &lt; eps) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> getDis(x, y);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>整体写下来，尝试了很多次，初始值与学习率与学习率衰减的设置都会很大程度上影响是否能够收敛到最优值。该算法对初始化参数设置的依赖较大。</p>
-<h5 id="3-2-爬山算法"><a href="#3-2-爬山算法" class="headerlink" title="3.2 爬山算法"></a>3.2 爬山算法</h5><p>如果给定的凸函数很难求导，我们注意到负梯度方向，$\nabla f = -\frac{\partial f}{\partial x}(1, 0) -\frac{\partial f}{\partial y}(0, 1)$，开始我们选择一个步长，表示每次移动的距离。如果我们当前在位置$(x, y)$，我们一次枚举四个方向，判断其函数值是否更小，如果更小则进行移动，否则说明我们的步长过大，直接跳过了最优值点，调整步长为原来的一半，直到步长小于给定的阈值。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">getMinDistSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; positions)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = positions.size();</span><br><span class="line">        <span class="keyword">double</span> eps = <span class="number">1e-8</span>, step = <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">double</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> p : positions) &#123;</span><br><span class="line">            x += p[<span class="number">0</span>];</span><br><span class="line">            y += p[<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        x /= n;</span><br><span class="line">        y /= n;</span><br><span class="line">        <span class="keyword">auto</span> getDis = [&amp;](<span class="keyword">double</span> x, <span class="keyword">double</span> y) &#123;</span><br><span class="line">            <span class="keyword">double</span> ans = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">auto</span> p : positions) &#123;</span><br><span class="line">                ans += <span class="built_in">sqrt</span>((x - p[<span class="number">0</span>]) * (x - p[<span class="number">0</span>]) + (y - p[<span class="number">1</span>]) * (y - p[<span class="number">1</span>]));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; dir = &#123;&#123;<span class="number">0</span>, <span class="number">1</span>&#125;, &#123;<span class="number">0</span>, <span class="number">-1</span>&#125;, &#123;<span class="number">1</span>, <span class="number">0</span>&#125;, &#123;<span class="number">-1</span>, <span class="number">0</span>&#125;&#125;;</span><br><span class="line">        <span class="keyword">double</span> d = getDis(x, y);</span><br><span class="line">        <span class="keyword">while</span> (step &gt; eps) &#123;</span><br><span class="line">            <span class="keyword">bool</span> flag = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; <span class="number">4</span>; ++k) &#123;</span><br><span class="line">                <span class="keyword">double</span> nx = x + step * dir[k][<span class="number">0</span>], ny = y + step * dir[k][<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">double</span> t = getDis(nx, ny);</span><br><span class="line">                <span class="keyword">if</span> (t &lt; d) &#123;</span><br><span class="line">                    x = nx;</span><br><span class="line">                    y = ny;</span><br><span class="line">                    d = t;</span><br><span class="line">                    flag = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!flag) step /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> d;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1059,20 +958,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
