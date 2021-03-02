@@ -6,7 +6,7 @@
   <link href="http://abeltian.top/atom.xml" rel="self"/>
   
   <link href="http://abeltian.top/"/>
-  <updated>2021-02-27T13:49:17.514Z</updated>
+  <updated>2021-03-01T11:35:01.210Z</updated>
   <id>http://abeltian.top/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>凸包</title>
+    <link href="http://abeltian.top/2021/03/01/%E5%87%B8%E5%8C%85/"/>
+    <id>http://abeltian.top/2021/03/01/%E5%87%B8%E5%8C%85/</id>
+    <published>2021-03-01T08:43:21.000Z</published>
+    <updated>2021-03-01T11:35:01.210Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="凸包"><a href="#凸包" class="headerlink" title="凸包"></a>凸包</h3><p>二维凸包， 凸多边形是指所有内角大小都在$[0, \pi]$范围内的简单多边形。在平面上能包含所有给定点的最小凸多边形叫做凸包。</p><p><img src="https://i.loli.net/2021/03/01/lnexKVFcdszy1o9.png" alt="image-20210301175049366.png"></p><h4 id="Andrew算法"><a href="#Andrew算法" class="headerlink" title="Andrew算法"></a>Andrew算法</h4><p>$\quad\quad$首先将点集按照x坐标(第一关键字)，y坐标进行升序排列。显然排序后最小的元素和最大的元素一定在凸包上。他们之间的部分可以分成上下两条链分别求解。求下链时只要从小到大遍历排序后的点列，求上链从大到小遍历即可。</p><p>$\quad\quad$在凸包上，我们从一个点出发逆时针走，轨迹总是左拐的，如果出现右拐，则说明该段不在凸包上。采用栈来记录轨迹上已经走过的点，如果即将入栈的点$P$和栈顶点$S_1$构成的向量方向相较$S_2, S_1$构成向量的方向向右旋转，即叉积$\vec{S_2S_1} \times\vec{S_1P} &lt; 0$，则弹出栈顶，直到$\vec{S_2S_1} \times\vec{S_1P} \geq 0$或栈内仅包含一个元素。</p><p><img src="https://i.loli.net/2021/03/01/SntDQRqyGUWZdb7.png" alt="image-20210301193138704.png"></p><p><img src="https://i.loli.net/2021/03/01/dRhNI73XCswi4k9.png" alt="image2"></p><h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Point</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x, y;</span><br><span class="line">    Point(<span class="keyword">int</span> _x, <span class="keyword">int</span> _y) : x(_x), y(_y) &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Point&amp; rhs) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> x == rhs.x ? y &lt; rhs.y : x &lt; rhs.x;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Point <span class="keyword">operator</span> - (<span class="keyword">const</span> Point&amp; rhs) &#123;</span><br><span class="line">        <span class="function">Point <span class="title">ret</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">        ret.x = x - rhs.x;</span><br><span class="line">        ret.y = y - rhs.y;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> <span class="keyword">operator</span> ^ (<span class="keyword">const</span> Point&amp; rhs) &#123;</span><br><span class="line">        <span class="keyword">return</span> x * rhs.y - y * rhs.x; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; outerTrees(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; points) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;Point&gt; arr;</span><br><span class="line">        <span class="keyword">int</span> n = points.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            arr.push_back(&#123;points[i][<span class="number">0</span>], points[i][<span class="number">1</span>]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        sort(arr.begin(), arr.end());</span><br><span class="line">        <span class="keyword">int</span> tp = <span class="number">0</span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="title">used</span><span class="params">(n, <span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">st</span><span class="params">(n + <span class="number">5</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (tp &gt;= <span class="number">2</span> &amp;&amp; ((arr[st[tp]] - arr[st[tp - <span class="number">1</span>]]) ^ (arr[i] - arr[st[tp]])) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                used[st[tp--]] = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            st[++tp] = i;</span><br><span class="line">            used[i] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        used[<span class="number">0</span>] = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (used[i]) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">while</span> (tp &gt;= <span class="number">2</span> &amp;&amp; ((arr[st[tp]] - arr[st[tp - <span class="number">1</span>]]) ^ (arr[i] - arr[st[tp]])) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                used[st[tp--]] = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            st[++tp] = i;</span><br><span class="line">            used[i] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; ret;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; tp; ++i) &#123;</span><br><span class="line">           ret.push_back(&#123;arr[st[i]].x, arr[st[i]].y&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><h3 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h3><ul><li>时间复杂度，排序$O(n\log n)$，上下链求解$O(2n)$</li><li>空间复杂度，栈的最大深度为O(n)</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;凸包&quot;&gt;&lt;a href=&quot;#凸包&quot; class=&quot;headerlink&quot; title=&quot;凸包&quot;&gt;&lt;/a&gt;凸包&lt;/h3&gt;&lt;p&gt;二维凸包， 凸多边形是指所有内角大小都在$[0, \pi]$范围内的简单多边形。在平面上能包含所有给定点的最小凸多边形叫做凸包。&lt;/p&gt;
+&lt;</summary>
+      
+    
+    
+    
+    
+    <category term="Alogrithm" scheme="http://abeltian.top/tags/Alogrithm/"/>
+    
+  </entry>
   
   <entry>
     <title>跳表</title>
@@ -43,9 +66,9 @@
     <link href="http://abeltian.top/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/"/>
     <id>http://abeltian.top/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/</id>
     <published>2021-02-24T12:51:45.000Z</published>
-    <updated>2021-02-24T14:48:49.153Z</updated>
+    <updated>2021-02-28T14:42:49.299Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="JAVA-反射"><a href="#JAVA-反射" class="headerlink" title="JAVA 反射"></a>JAVA 反射</h3><p>反射是为了解决运行期，对某个对象一无所知的情况下，调用其方法，JVM为每一个加载的class创建一个Class类型的实例，并关联起来。</p><p>通过Class实例获取class信息的方法称为反射(Reflection)</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="JAVA-反射"><a href="#JAVA-反射" class="headerlink" title="JAVA 反射"></a>JAVA 反射</h3><p>反射是为了解决运行期，对某个对象一无所知的情况下，调用其方法，JVM为每一个加载的class创建一个Class类型的实例，并关联起来。</p><p>通过Class实例获取class信息的方法称为反射(Reflection)</p><h4 id="1-访问字段"><a href="#1-访问字段" class="headerlink" title="1. 访问字段"></a>1. 访问字段</h4><ul><li><p>Java的反射API提供的<code>Field</code>类封装了字段的所有信息：</p></li><li><p>通过<code>Class</code>实例的方法可以获取<code>Field</code>实例：<code>getField()</code>，<code>getFields()</code>，<code>getDeclaredField()</code>，<code>getDeclaredFields()</code>；</p></li><li><p>通过Field实例可以获取字段信息：<code>getName()</code>，<code>getType()</code>，<code>getModifiers()</code>；</p></li><li><p>通过Field实例可以读取或设置某个对象的字段，如果存在访问限制，要首先调用<code>setAccessible(true)</code>来访问非<code>public</code>字段。</p></li><li><p>通过反射读写字段是一种非常规方法，它会破坏对象的封装。****</p></li></ul><h4 id="2-调用方法"><a href="#2-调用方法" class="headerlink" title="2.调用方法"></a>2.调用方法</h4><h4 id="3-调用构造方法、获取继承关系"><a href="#3-调用构造方法、获取继承关系" class="headerlink" title="3.调用构造方法、获取继承关系"></a>3.调用构造方法、获取继承关系</h4><h4 id="4-动态代理"><a href="#4-动态代理" class="headerlink" title="4.动态代理"></a>4.动态代理</h4>]]></content>
     
     
       
@@ -89,9 +112,9 @@
     <link href="http://abeltian.top/2021/02/22/JAVA/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     <id>http://abeltian.top/2021/02/22/JAVA/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</id>
     <published>2021-02-22T12:03:14.000Z</published>
-    <updated>2021-02-22T12:20:48.843Z</updated>
+    <updated>2021-02-28T15:47:10.646Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h3><p>设计模式本质上是面向对象设计原则的实际运用。</p><h4 id="1-1设计模式分类"><a href="#1-1设计模式分类" class="headerlink" title="1.1设计模式分类"></a>1.1设计模式分类</h4><ul><li>创建型模式</li><li>结构型模式</li><li>行为型模式</li></ul><h4 id="UML-类图"><a href="#UML-类图" class="headerlink" title="UML 类图"></a>UML 类图</h4>]]></content>
+    <content type="html"><![CDATA[<h3 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h3><p>设计模式本质上是面向对象设计原则的实际运用。</p><h4 id="1-1设计模式分类"><a href="#1-1设计模式分类" class="headerlink" title="1.1设计模式分类"></a>1.1设计模式分类</h4><ul><li>创建型模式</li><li>结构型模式</li><li>行为型模式</li></ul><h4 id="UML-类图"><a href="#UML-类图" class="headerlink" title="UML 类图"></a>UML 类图</h4><h4 id="2-设计模式"><a href="#2-设计模式" class="headerlink" title="2.设计模式"></a>2.设计模式</h4><ul><li>代理模式：<a href="https://www.cnblogs.com/daniels/p/8242592.html">https://www.cnblogs.com/daniels/p/8242592.html</a></li></ul><p><img src="https://images2017.cnblogs.com/blog/1071931/201801/1071931-20180108134122472-1822105846.png" alt="img"></p><ul><li>中介隔离作用， 代理类对象可以在客户类和委托对象之间起到中介的作用。</li><li>开闭原则，增加功能。代理类本身并不真正实现服务，而是同过调用委托类的相关方法，来提供特定的服务。可以通过给代理类增加额外的功能来扩展委托类的功能。</li><li>java动态代理 <a href="https://blog.csdn.net/yaomingyang/article/details/80981004">https://blog.csdn.net/yaomingyang/article/details/80981004</a></li></ul>]]></content>
     
     
       
@@ -471,19 +494,6 @@
     
     
     <category term="动态规划" scheme="http://abeltian.top/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>leetcode_372</title>
-    <link href="http://abeltian.top/2020/12/21/leetcode-372/"/>
-    <id>http://abeltian.top/2020/12/21/leetcode-372/</id>
-    <published>2020-12-21T09:35:27.000Z</published>
-    <updated>2020-12-22T11:39:49.040Z</updated>
-    
-    
-    
-    
     
   </entry>
   
