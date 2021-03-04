@@ -6,7 +6,7 @@
   <link href="http://abeltian.top/atom.xml" rel="self"/>
   
   <link href="http://abeltian.top/"/>
-  <updated>2021-03-01T11:35:01.210Z</updated>
+  <updated>2021-03-02T15:26:54.233Z</updated>
   <id>http://abeltian.top/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://abeltian.top/2021/03/02/JAVA/java%E6%B3%A8%E8%A7%A3/"/>
+    <id>http://abeltian.top/2021/03/02/JAVA/java%E6%B3%A8%E8%A7%A3/</id>
+    <published>2021-03-02T14:34:30.929Z</published>
+    <updated>2021-03-02T15:26:54.233Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="java注解"><a href="#java注解" class="headerlink" title="java注解"></a>java注解</h3><p>注解可以被编译器打包进入class文件，是一种用作标注的元数据。</p><ul><li>由编译器使用的注解@Override让编译器检查该方法是否正确地实现了覆写。这类注解不会被编译进入.class文件，在编译后就被扔掉了</li><li>由工具类处理.class文件使用的注解。</li><li>程序运行期能够读取的注解，加载后一直存在于JVM中，例如@PostConstruct方法在调用构造方法后自动被调用。</li></ul><h4 id="1-定义注解"><a href="#1-定义注解" class="headerlink" title="1.定义注解"></a>1.定义注解</h4><p>java语言使用@interface语法来定义注解(Annotation)</p><h3 id="2-使用注解"><a href="#2-使用注解" class="headerlink" title="2.使用注解"></a>2.使用注解</h3><p>通常注解如何使用由程序自己决定。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;java注解&quot;&gt;&lt;a href=&quot;#java注解&quot; class=&quot;headerlink&quot; title=&quot;java注解&quot;&gt;&lt;/a&gt;java注解&lt;/h3&gt;&lt;p&gt;注解可以被编译器打包进入class文件，是一种用作标注的元数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;由编译器使用的注</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>凸包</title>
@@ -462,30 +484,6 @@
     <summary type="html">&lt;h3 id=&quot;树与图上的动态规划&quot;&gt;&lt;a href=&quot;#树与图上的动态规划&quot; class=&quot;headerlink&quot; title=&quot;树与图上的动态规划&quot;&gt;&lt;/a&gt;树与图上的动态规划&lt;/h3&gt;&lt;p&gt;洛谷p 2015 二叉苹果树&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;二叉树共有N个</summary>
-      
-    
-    
-    
-    <category term="Data Structure" scheme="http://abeltian.top/categories/Data-Structure/"/>
-    
-    
-    <category term="动态规划" scheme="http://abeltian.top/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>动态规划优化-单调队列</title>
-    <link href="http://abeltian.top/2020/12/22/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%BC%98%E5%8C%96/"/>
-    <id>http://abeltian.top/2020/12/22/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%BC%98%E5%8C%96/</id>
-    <published>2020-12-22T12:03:51.000Z</published>
-    <updated>2020-12-22T12:52:35.889Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="动态规划优化-单调队列"><a href="#动态规划优化-单调队列" class="headerlink" title="动态规划优化-单调队列"></a>动态规划优化-单调队列</h3><p>当状态转移的复杂度为$O(n)$时， 状态个数为n个，动态规划的算法复杂度为$O(n^2)$，可能会超时，因此对状态转移的过程进行优化，将状态转移的复杂度降低到$O(logn)$或$O(1)$</p><h4 id="例1-多重背包的单调队列优化"><a href="#例1-多重背包的单调队列优化" class="headerlink" title="例1 多重背包的单调队列优化"></a>例1 多重背包的单调队列优化</h4><blockquote><p>有 <em>N</em> 种物品和一个容量是 <em>V</em>的背包。第 <em>i</em>种物品最多有 $s_i$ 件，每件体积是 $v_i$，价值是$w_i$。求解将哪些物品装入背包，可使物品体积总和不超过背包容量，且价值总和最大。输出最大价值。0&lt;<em>N</em>≤1000<br>0&lt;<em>V</em>≤20000<br>0&lt;$s_i$,$v_i$,$w_i$≤20000</p></blockquote><p>状态转移方程，可以按照体积进行分组，本质上是求一个滑动窗口的最大值。<br>$$<br>dp[j+mv] = max(dp[j] + mw,  dp[j+v] + (m - 1)w, \dots, dp[j+mv])<br>$$<br>对上面的状态转移方程进行变形,采用单调队列进行优化，代码如下：<br>$$<br>dp[j+mv] = max(dp[j],  dp[j+v] - w, \dots, dp[j+mv]) + mw<br>$$</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dp[<span class="number">20010</span>], pre[<span class="number">20010</span>], dq[<span class="number">20010</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m, v, w, s;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0</span>, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; v &gt;&gt; w &gt;&gt; s;</span><br><span class="line">        <span class="built_in">memcpy</span>(pre, dp, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">        <span class="built_in">memset</span>(dp, <span class="number">0</span>, <span class="keyword">sizeof</span>(dp));</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; v; ++j) &#123;</span><br><span class="line">            <span class="keyword">int</span> head = <span class="number">0</span>, tail = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = j; k &lt;= m; k += v) &#123;</span><br><span class="line">                <span class="keyword">while</span> (head &lt;= tail &amp;&amp; pre[k] - pre[dq[tail]] &gt; (k - dq[tail]) / v * w) &#123;</span><br><span class="line">                    tail--;</span><br><span class="line">                &#125;</span><br><span class="line">                dq[++tail] = k;</span><br><span class="line">                <span class="keyword">if</span> ((k - dq[head]) / v &gt; s) head++;</span><br><span class="line">                dp[k] = pre[dq[head]] + (k - dq[head]) / v * w;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; dp[m] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="例2-跳跃游戏VI"><a href="#例2-跳跃游戏VI" class="headerlink" title="例2 跳跃游戏VI"></a>例2 跳跃游戏VI</h4><blockquote><p>给你一个下标从 <strong>0</strong> 开始的整数数组 <code>nums</code> 和一个整数 <code>k</code> 。一开始你在下标 <code>0</code> 处。每一步，你最多可以往前跳 <code>k</code> 步，但你不能跳出数组的边界, 达数组最后一个位置（下标为 <code>n - 1</code> ），你的 <strong>得分</strong> 为经过的所有数字之和。请你返回你能得到的 <strong>最大得分</strong> 。</p><p>1 &lt;= nums.length, k &lt;= $10^5$<br>$-10^4$ &lt;= nums[i] &lt;= $10^4$</p></blockquote><p>状态转移方程</p><p>$$<br>f[i]=\max_{max(0,i−k)≤j&lt;i}​{f[j]}+nums[i]<br>$$</p><p>该状态转移方程为$O(n^2)$，但是我们仅需要前面这个滑动窗中的最大值，因此采用单调队列的方式进行优化，使得队列头部为该滑动窗的最大值。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxResult</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size();</span><br><span class="line">        <span class="built_in">deque</span>&lt;<span class="keyword">int</span>&gt; dq&#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(n, <span class="number">0</span>)</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i - dq.front() &gt; k) dq.pop_front();</span><br><span class="line">            <span class="keyword">int</span> val = dp[dq.front()] + nums[i];</span><br><span class="line">            <span class="keyword">while</span> (!dq.empty() &amp;&amp; val &gt; dp[dq.back()]) &#123;</span><br><span class="line">                dq.pop_back();</span><br><span class="line">            &#125;</span><br><span class="line">            dq.push_back(i);</span><br><span class="line">            dp[i] = val;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;动态规划优化-单调队列&quot;&gt;&lt;a href=&quot;#动态规划优化-单调队列&quot; class=&quot;headerlink&quot; title=&quot;动态规划优化-单调队列&quot;&gt;&lt;/a&gt;动态规划优化-单调队列&lt;/h3&gt;&lt;p&gt;当状态转移的复杂度为$O(n)$时， 状态个数为n个，动态规划的算法</summary>
       
     
     
