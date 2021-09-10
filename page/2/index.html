@@ -162,6 +162,84 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/" class="post-title-link" itemprop="url">JAVA反射</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-24 20:51:45" itemprop="dateCreated datePublished" datetime="2021-02-24T20:51:45+08:00">2021-02-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="JAVA-反射"><a href="#JAVA-反射" class="headerlink" title="JAVA 反射"></a>JAVA 反射</h3><p>反射是为了解决运行期，对某个对象一无所知的情况下，调用其方法，JVM为每一个加载的class创建一个Class类型的实例，并关联起来。</p>
+<p>通过Class实例获取class信息的方法称为反射(Reflection)</p>
+<h4 id="1-访问字段"><a href="#1-访问字段" class="headerlink" title="1. 访问字段"></a>1. 访问字段</h4><ul>
+<li><p>Java的反射API提供的<code>Field</code>类封装了字段的所有信息：</p>
+</li>
+<li><p>通过<code>Class</code>实例的方法可以获取<code>Field</code>实例：<code>getField()</code>，<code>getFields()</code>，<code>getDeclaredField()</code>，<code>getDeclaredFields()</code>；</p>
+</li>
+<li><p>通过Field实例可以获取字段信息：<code>getName()</code>，<code>getType()</code>，<code>getModifiers()</code>；</p>
+</li>
+<li><p>通过Field实例可以读取或设置某个对象的字段，如果存在访问限制，要首先调用<code>setAccessible(true)</code>来访问非<code>public</code>字段。</p>
+</li>
+<li><p>通过反射读写字段是一种非常规方法，它会破坏对象的封装。****</p>
+</li>
+</ul>
+<h4 id="2-调用方法"><a href="#2-调用方法" class="headerlink" title="2.调用方法"></a>2.调用方法</h4><h4 id="3-调用构造方法、获取继承关系"><a href="#3-调用构造方法、获取继承关系" class="headerlink" title="3.调用构造方法、获取继承关系"></a>3.调用构造方法、获取继承关系</h4><h4 id="4-动态代理"><a href="#4-动态代理" class="headerlink" title="4.动态代理"></a>4.动态代理</h4>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/24/JAVA/JAVA-Spring/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -882,118 +960,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/01/25/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/01/25/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83/" class="post-title-link" itemprop="url">乘法逆元</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-01-25 22:11:43" itemprop="dateCreated datePublished" datetime="2021-01-25T22:11:43+08:00">2021-01-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="乘法逆元"><a href="#乘法逆元" class="headerlink" title="乘法逆元"></a>乘法逆元</h3><h4 id="1-逆元的定义"><a href="#1-逆元的定义" class="headerlink" title="1. 逆元的定义"></a>1. 逆元的定义</h4><p>如果一个线性同余方程$ax \equiv 1 (mod\ b)$，则称$x$为$a\ mod\ b$的逆元，记作$a^{-1}$。</p>
-<p>模运算规则与基本四则运算类似，但是除法例外。在ACM竞赛中，除法取模的运算要用到求逆元，从而得到$(a / b) \% c = (a * x) \% c$</p>
-<p>证明：已知$(b * x) \% c = 1$，假设$(a / b) \% c = y_1, (a * x) \% c = y_2$</p>
-<p>则</p>
-<ul>
-<li>$a / b = k_1*c + y_1\quad(1)$ </li>
-<li>$a*x = k_2 * c + y_2\quad(2)$</li>
-<li>$(1) -(2)$$\quad \rightarrow \quad a/b - a*x = (k_1 - k_2)*c + (y_1 - y_2)$ </li>
-<li>左右同时乘以b $\quad \rightarrow \quad$  $a - a * x * b = k * c * b + (y1 - y2) * b$ </li>
-<li>左右模上c $\quad \rightarrow \quad (y1 - y2) * b \% c = 0$</li>
-<li>因为$b \neq 0$, 所以$y_1 = y_2$</li>
-</ul>
-<h4 id="2-求逆元"><a href="#2-求逆元" class="headerlink" title="2. 求逆元"></a>2. 求逆元</h4><p>费马小定理，若p为素数，且$gcd(a, p) = 1$，则$a^{p - 1} \equiv 1 (mod\ p)$</p>
-<p>证明：</p>
-<ul>
-<li>构造一个序列$A={1, 2, 3, \dots p - 1}$， 这个序列有如下的性质:</li>
-<li>$\mathop{\Pi}\limits_{i = 1}^{n}A_i = \mathop{\Pi}\limits_{i = 1}^{n}(A_i \times a)$</li>
-<li>对于任意$i, j \in n $，$(A_i * a )\% p \neq (A_j * a )\% p$，因为$(A_i - A_j) * a \% p = 0$，则$A_i - A_j = 0$</li>
-<li>因此$(p - 1)! \equiv (p - 1)! * a^{p - 1}\ (mod\ p) \quad \rightarrow a^{p - 1} \equiv 1 \ mod(\ p)$ </li>
-</ul>
-<h4 id="2-1-扩展欧几里得算法"><a href="#2-1-扩展欧几里得算法" class="headerlink" title="2.1 扩展欧几里得算法"></a>2.1 扩展欧几里得算法</h4><p><a href="https://abeltian.top/2021/01/26/exgcd/">扩展欧几里得算法</a></p>
-<p>求解同余方程$ax \equiv 1 (mod\ b)$的最小整数解</p>
-<p>假设采用扩展欧几里得算法求得一组$x_0, y_0$满足$ax_0 +by_0 = gcd(a, b)$，则该方程的任意解可以表示为$x = x_0 + bt, y = y_0-at$，对于任意t均成立，最小整数解可以表示为$x = ((x_0\ mod\ b) + b) mod\ b$</p>
-<h4 id="2-2快速幂算法"><a href="#2-2快速幂算法" class="headerlink" title="2.2快速幂算法"></a>2.2快速幂算法</h4><p>根据费马小定理，$1 \equiv a^{p -1} (mod\ p)$，因此$x = a^{p - 2}$，可以采用快速幂算法进行计算。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> a, <span class="keyword">long</span> <span class="keyword">long</span> b)</span> </span>&#123;</span><br><span class="line">    ll ret = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (b) &#123;</span><br><span class="line">        <span class="keyword">if</span> (b &amp; <span class="number">1</span>) &#123;</span><br><span class="line">            ret = (ret * a) % mod;</span><br><span class="line">        &#125;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        a = (a * a) % mod;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-3-线性求逆元"><a href="#2-3-线性求逆元" class="headerlink" title="2.3 线性求逆元"></a>2.3 线性求逆元</h4><p>求出$1, 2, \dots, n$中每个数关于p的逆元。</p>
-<ul>
-<li>显然$1{-1} \equiv 1 (mod\ p)$</li>
-<li>令$k = \lfloor\frac{p}{i} \rfloor, j = p\ mod\ i$, 因此有$p = ki + j$，在模p的意义下就有$ki + j \equiv 0\ (mod\ p)$</li>
-<li>左右同乘以$i^{-1}, j^{-1}$，有$kj^{-1} + i^{-1}=0$</li>
-<li>$i^{-1}=-kj^{-1} = (p - k)j^{-1}$</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> expr mod = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">ll fac[N], R[N], inv[N];</span><br><span class="line">fac[<span class="number">0</span>] = fac[<span class="number">1</span>] = R[<span class="number">0</span>] = R[<span class="number">1</span>] = inv[<span class="number">0</span>] = inv[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">	fac[i] = <span class="number">1L</span>L * fac[i - <span class="number">1</span>] * i % mod;</span><br><span class="line">    inv[i] = <span class="number">1L</span>L * (mod - mod / i) * inv[mod % i] % mod;</span><br><span class="line">    R[i] = <span class="number">1L</span>L * R[i - <span class="number">1</span>] * inv[i] % mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">comb</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (n &lt; m) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1L</span>L * fac[n] * R[m] % mod * R[n - m] % mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-4-线性求任意n个数的逆元"><a href="#2-4-线性求任意n个数的逆元" class="headerlink" title="2.4 线性求任意n个数的逆元"></a>2.4 线性求任意n个数的逆元</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> LL = <span class="keyword">long</span> <span class="keyword">long</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">constexpr</span> LL mod = <span class="number">99997867</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> N = <span class="number">1000005</span>;</span><br><span class="line">LL fac[N], rf[N];</span><br><span class="line"></span><br><span class="line"><span class="function">LL <span class="title">qpow</span><span class="params">(LL a, LL b)</span> </span>&#123;</span><br><span class="line">    LL ret = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (b) &#123;</span><br><span class="line">        <span class="keyword">if</span> (b &amp; <span class="number">1</span>) &#123;</span><br><span class="line">            ret = ret * a % mod;</span><br><span class="line">        &#125;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        a = a * a % mod;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    fac[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        fac[i] = fac[i - <span class="number">1</span>] * i % mod;</span><br><span class="line">    &#125;</span><br><span class="line">    rf[N - <span class="number">1</span>] = qpow(fac[N - <span class="number">1</span>], mod - <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = N - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        rf[i] = rf[i + <span class="number">1</span>] * (i + <span class="number">1</span>) % mod; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">LL <span class="title">comb</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; m || m &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> fac[n] * rf[n - m] % mod * rf[m] % mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1065,7 +1031,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
