@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/libs/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"abeltian.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="DTMF信号的检测与识别1. 程序设计思路与框图1.1 FFT直接计算利用FFT计算输入的信号的DFT频域信息，并找到两个峰值频率点，从而检测DTMF信号。  数据预处理，作业给定的为.wav文件，其中数据为16bit的short类型，文件指针偏移40个字节的位置记录了wav数据块的字节数，调用read函数将之后的数据读入到数组中。  编写类FFTMethod，调用第一次作业编写的时域基2DFT对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DTMF信号检测与识别">
+<meta property="og:url" content="http://abeltian.top/2020/12/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/index.html">
+<meta property="og:site_name" content="TYS的博客">
+<meta property="og:description" content="DTMF信号的检测与识别1. 程序设计思路与框图1.1 FFT直接计算利用FFT计算输入的信号的DFT频域信息，并找到两个峰值频率点，从而检测DTMF信号。  数据预处理，作业给定的为.wav文件，其中数据为16bit的short类型，文件指针偏移40个字节的位置记录了wav数据块的字节数，调用read函数将之后的数据读入到数组中。  编写类FFTMethod，调用第一次作业编写的时域基2DFT对">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/12/15/qX4PvIlB36bjSLc.png">
+<meta property="og:image" content="https://i.loli.net/2020/12/15/WPjz2ItDx5vhKuM.png">
+<meta property="og:image" content="https://i.loli.net/2020/12/15/mMfArlcUnZO8sPT.png">
+<meta property="og:image" content="https://i.loli.net/2020/12/15/5Olr6ciBUpfImsC.png">
+<meta property="og:image" content="https://i.loli.net/2020/12/15/oUfzLdDCkjwVQKH.png">
+<meta property="article:published_time" content="2020-12-15T14:17:52.000Z">
+<meta property="article:modified_time" content="2021-09-10T08:53:11.501Z">
+<meta property="article:author" content="tys">
+<meta property="article:tag" content="信号处理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/12/15/qX4PvIlB36bjSLc.png">
+
+<link rel="canonical" href="http://abeltian.top/2020/12/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DTMF信号检测与识别 | TYS的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="TYS的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">TYS的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">算法小白努力学习中</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DTMF信号检测与识别
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-15 22:17:52" itemprop="dateCreated datePublished" datetime="2020-12-15T22:17:52+08:00">2020-12-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">信号处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="DTMF信号的检测与识别"><a href="#DTMF信号的检测与识别" class="headerlink" title="DTMF信号的检测与识别"></a>DTMF信号的检测与识别</h3><h3 id="1-程序设计思路与框图"><a href="#1-程序设计思路与框图" class="headerlink" title="1. 程序设计思路与框图"></a>1. 程序设计思路与框图</h3><h4 id="1-1-FFT直接计算"><a href="#1-1-FFT直接计算" class="headerlink" title="1.1 FFT直接计算"></a>1.1 FFT直接计算</h4><p>利用FFT计算输入的信号的DFT频域信息，并找到两个峰值频率点，从而检测DTMF信号。</p>
+<ul>
+<li><p>数据预处理，作业给定的为.wav文件，其中数据为16bit的short类型，文件指针偏移40个字节的位置记录了wav数据块的字节数，调用read函数将之后的数据读入到数组中。</p>
+</li>
+<li><p>编写类FFTMethod，调用第一次作业编写的时域基2DFT对音频信号做FFT变换。找到频域中两个峰值对应的数字角频率，从而计算得到模拟角频率，找到对应的DTMF信号</p>
+</li>
+<li><p>程序框图</p>
+<img src="https://i.loli.net/2020/12/15/qX4PvIlB36bjSLc.png" alt="image-20201215223342850.png" height=400>
+
+</li>
+</ul>
+<h4 id="1-2-Goertzel-算法"><a href="#1-2-Goertzel-算法" class="headerlink" title="1.2 Goertzel 算法"></a>1.2 Goertzel 算法</h4><p>计算FFT包含了信号整个频域的信息，而我们只关注DTMF信号的八个特定频率，因此算法存在冗余。在FFT中如果我们只关注某一个特定的数字角频率，$X[k] = \sum_{n = 0}^{N- 1}x[m]W_n^{m -N}$，其可以视为$x[n]$通过冲激响应为$W_N^{-nk}$的LTI系统在N时刻的取值。第k个频点对应的差分方程为：<br>$$<br>V_k[n] = 2cos(\omega_k)V_k[n - 1] - V_k[n-2] + x[n] \<br>X_k[n] = V_k[n] - W_N^k[n - 1], v[-1] = v[-2] = 0<br>$$<br>其本质是一个动态规划的过程，由递推关系可以得到n时刻的状态，从而确定该频点的FFT。得到八个特定频点的FFT值后，选择两个峰值，从而确定DTMF信号。</p>
+<img src="https://i.loli.net/2020/12/15/WPjz2ItDx5vhKuM.png" alt="image-20201215224401308.png" height=400>
+
+<h4 id="1-3一串DTMF信号的识别"><a href="#1-3一串DTMF信号的识别" class="headerlink" title="1.3一串DTMF信号的识别"></a>1.3一串DTMF信号的识别</h4><p>下图为一串DTMF信号的时域图像，可以看到其中包含了15个DTMF信号，我们要做的工作是确定每一个信号的起始于结束位置，直接使用强度值进行判断存在较大的误差，因此选择滑动窗取平均的方式。程序中选择滑动窗大小为64，计算信号每个点对应的滑动窗内的平均能量，并与阈值作比较，从而确定每一个信号的起始结束位置。之后将每一段信号采用上述的两种方法进行信号判断</p>
+<p><img src="https://i.loli.net/2020/12/15/mMfArlcUnZO8sPT.png" alt="image-20201215224445627.png"></p>
+<ul>
+<li>程序框图</li>
+</ul>
+<img src="https://i.loli.net/2020/12/15/5Olr6ciBUpfImsC.png" alt="image-20201215225103976.png" height=400>
+
+<h3 id="2-两种算法的结果与复杂度比较"><a href="#2-两种算法的结果与复杂度比较" class="headerlink" title="2.两种算法的结果与复杂度比较"></a>2.两种算法的结果与复杂度比较</h3><p>实验结果：</p>
+<p><img src="https://i.loli.net/2020/12/15/oUfzLdDCkjwVQKH.png" alt="image-20201215225340386.png"></p>
+<p>复杂度分析：</p>
+<ul>
+<li><p>FFT方法采用DFT计算了所有的频点信息，时间复杂度为$O(nlogn)$，寻找峰值的复杂度为O(n)，总的时间复杂度为$O(nlogn) + O(n)$</p>
+</li>
+<li><p>Goertzel方法只计算特定的8个频点，并采用差分方程的形式递推计算，时间复杂度为O(n)</p>
+</li>
+<li><p>FFT方法需要存储所有的频域信息，空间复杂度为$O(n)$， Goertzel方法在递推过程中只需要V[i-1]、V[i-2]这两个状态， 空间复杂度为$O(1)$</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" rel="tag"># 信号处理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/a%20simple%20shell/" rel="prev" title="unix shell简单实现">
+      <i class="fa fa-chevron-left"></i> unix shell简单实现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/" rel="next" title="最长递增子序列">
+      最长递增子序列 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DTMF%E4%BF%A1%E5%8F%B7%E7%9A%84%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">DTMF信号的检测与识别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%A1%86%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">1. 程序设计思路与框图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-FFT%E7%9B%B4%E6%8E%A5%E8%AE%A1%E7%AE%97"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 FFT直接计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Goertzel-%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 Goertzel 算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3%E4%B8%80%E4%B8%B2DTMF%E4%BF%A1%E5%8F%B7%E7%9A%84%E8%AF%86%E5%88%AB"><span class="nav-number">2.3.</span> <span class="nav-text">1.3一串DTMF信号的识别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%A4%E7%A7%8D%E7%AE%97%E6%B3%95%E7%9A%84%E7%BB%93%E6%9E%9C%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%AF%94%E8%BE%83"><span class="nav-number">3.</span> <span class="nav-text">2.两种算法的结果与复杂度比较</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tys"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">tys</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sty16" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sty16" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tys</span>
+</div>
+  <div class="powered-by">由 <a href="https://abeltian.top/" class="theme-link">tys</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/libs/anime.min.js"></script>
+  <script src="/libs/velocity/velocity.min.js"></script>
+  <script src="/libs/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
