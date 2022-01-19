@@ -162,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/19/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%89%8B%E5%86%99%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/03/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -176,7 +176,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/19/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%89%8B%E5%86%99%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/" class="post-title-link" itemprop="url">手写字符识别</a>
+            <a href="/2021/03/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">欧拉函数</a>
         </h2>
 
         <div class="post-meta">
@@ -186,7 +186,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-19 21:26:51" itemprop="dateCreated datePublished" datetime="2020-12-19T21:26:51+08:00">2020-12-19</time>
+              <time title="创建时间：2021-03-07 20:53:42" itemprop="dateCreated datePublished" datetime="2021-03-07T20:53:42+08:00">2021-03-07</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -195,15 +195,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-            </span>
 
           
 
@@ -216,27 +207,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="计算机视觉-computer-Vision"><a href="#计算机视觉-computer-Vision" class="headerlink" title="计算机视觉(computer Vision)"></a>计算机视觉(computer Vision)</h3><h3 id="1-全连接与CNN模型比较"><a href="#1-全连接与CNN模型比较" class="headerlink" title="1.全连接与CNN模型比较"></a>1.全连接与CNN模型比较</h3><p>​        好久没弄过深度学习的东西了，上次写得时候应该是大三上学期，一转眼就是两年了。感觉自己的记忆力好差啊，之前搞得那些已经是忘得一干二净了。这次的任务是采用Omniglot数据集进行手写数字的识别，该数据及包含了50中字母系统中共计1623种字符，每个字符有20个样本，部分样本如下图所示。</p>
-<p><img src="https://i.loli.net/2020/12/19/ESTwN5m9IBesoLg.png" alt="image-20201219215358508.png"></p>
-<p>​        我采用的深度学习框架是pytorch，当用户使用DataLoader加载自定义数据时，需要继承Dataset这个类，并重写其中的两个方法。传入参数为图片路径与标签的字典。采用DataLoader()加载数据，batch_size大小设置为64。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span>(<span class="params">self, index</span>):</span></span><br><span class="line">	<span class="keyword">raise</span> NotImplementedError</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__len__</span>(<span class="params">self</span>):</span></span><br><span class="line">	<span class="keyword">raise</span> NotImplementedError</span><br></pre></td></tr></table></figure>
-
-<p>定义包含一个隐层的全连接模型, 训练50个epoch，训练集上的loss与测试集上的accuracy如下图所示，全连接模型测试集的准群率在40%左右。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model = nn.Sequential(</span><br><span class="line">    nn.Linear(<span class="number">784</span>, <span class="number">2048</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Linear(<span class="number">2048</span>, <span class="number">50</span>),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2020/12/19/M9dejr8lyckFviV.png" alt="image-20201219221535989.png"></p>
-<p>定义包含四个卷积层与两个全连接层的CNN网络， 训练50次，测试集上的最高准确率为0.8389，相比于全连接模型，准确率大大提升。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">    x = self.conv1(x)</span><br><span class="line">    x = self.conv2(x)</span><br><span class="line">    x = self.conv3(x)</span><br><span class="line">    x = self.conv4(x)</span><br><span class="line">    x = x.view(x.size(<span class="number">0</span>), -<span class="number">1</span>)  <span class="comment"># (batch_size, size)</span></span><br><span class="line">    output = self.out(x)</span><br><span class="line">    <span class="keyword">return</span> output</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2020/12/19/CGVWcfxUHilDn4Q.png" alt="image-20201219221339503.png"></p>
-<h3 id="2-尝试与对比"><a href="#2-尝试与对比" class="headerlink" title="2.尝试与对比"></a>2.尝试与对比</h3><h4 id="2-1数据集的划分"><a href="#2-1数据集的划分" class="headerlink" title="2.1数据集的划分"></a>2.1数据集的划分</h4><p>​    将类别设置为20类，每个类别训练集为15个样本，测试集为3个样本，结果如下图所示，分类准确率相比于50类明显提升，最高为0.9314。适当的减少分类类别可以提升模型的分类准确率。</p>
-<p><img src="https://i.loli.net/2020/12/20/8wzl6Vv7ZYMJci2.png" alt="image-20201220110750985.png"></p>
-<h4 id="2-2改变模型结构"><a href="#2-2改变模型结构" class="headerlink" title="2.2改变模型结构"></a>2.2改变模型结构</h4><p>相比于示例给出的卷积网络，再加入一卷积层，结果如下，分类准确率变化不大。</p>
-<p><img src="https://i.loli.net/2020/12/20/q9AlUmfcGSTjJ1y.png" alt="image-20201220111552338.png"></p>
-<h4 id="2-3-不同的优化器比较"><a href="#2-3-不同的优化器比较" class="headerlink" title="2.3 不同的优化器比较"></a>2.3 不同的优化器比较</h4><p>上述训练都是采用的SGD优化器，改为Adagrad优化器的结果如下，loss相比于SGD优化器，没有较大的波动。准确率相比于SGD也有较大的提升，最高为0.8647。</p>
-<p><img src="https://i.loli.net/2020/12/20/PLR1cd3UGbqIifS.png" alt="image-20201220112546931.png"></p>
-<p>采用Adam优化器结果如下所示，其收敛速度慢于Adagrad优化器，训练500个epoch结果如下。测试集上的分类准确率为0.8777</p>
-<p><img src="https://i.loli.net/2020/12/20/F3fbyivgxdrC7em.png" alt="image-20201220114010564.png"></p>
+          <h3 id="欧拉函数"><a href="#欧拉函数" class="headerlink" title="欧拉函数"></a>欧拉函数</h3><p>欧拉函数是小于或等于n的正整数中与n互质的数目，$\phi(1) = 1$。</p>
+<p>通式：<br>$$<br>\phi(x)= x \mathop{\Pi}\limits_{i = 1}^{n}(1 - \frac{1}{p_i})<br>$$<br>若n是质数的p的k次幂，$\phi(n) = p^k - p^{k - 1}$，因为除了p的倍数$p * (1,2\dots p^{k - 1})$以外，其他数均与n互质。</p>
+<p>线性筛，每个合数通过其最小的质因数筛掉。</p>
 
       
     </div>
@@ -256,7 +229,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E8%BF%9B%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/03/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%87%B8%E5%8C%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -270,7 +243,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E8%BF%9B%E7%A8%8B/" class="post-title-link" itemprop="url">进程</a>
+            <a href="/2021/03/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%87%B8%E5%8C%85/" class="post-title-link" itemprop="url">凸包</a>
         </h2>
 
         <div class="post-meta">
@@ -280,7 +253,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-18 16:13:22" itemprop="dateCreated datePublished" datetime="2020-12-18T16:13:22+08:00">2020-12-18</time>
+              <time title="创建时间：2021-03-01 16:43:21" itemprop="dateCreated datePublished" datetime="2021-03-01T16:43:21+08:00">2021-03-01</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -289,15 +262,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
 
           
 
@@ -310,14 +274,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="1-进程的概念"><a href="#1-进程的概念" class="headerlink" title="1.进程的概念"></a>1.进程的概念</h4><p>程序(program)是一个存储在磁盘上某个目录中的可执行文件，内核使用exec函数将程序读入内存，并执行程序。</p>
-<p>程序执行的实例被称为进程(process), unix系统确保每个进程都有一个唯一的数字标识符，称为进程ID</p>
-<h4 id="2-进程环境"><a href="#2-进程环境" class="headerlink" title="2.进程环境"></a>2.进程环境</h4><p>进程命令行参数，当执行一个程序时，在调用main函数前先调用一个特殊的启动例程，启动例程从内核获得命令行参数和环境变量值，之后调用main函数。POSIX.1要求argv[argc]是一个空指针，因此在参数处理的循环中可以改写为</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; argv[i] != <span class="literal">NULL</span>; ++i)</span><br></pre></td></tr></table></figure>
+          <h3 id="凸包"><a href="#凸包" class="headerlink" title="凸包"></a>凸包</h3><p>二维凸包， 凸多边形是指所有内角大小都在$[0, \pi]$范围内的简单多边形。在平面上能包含所有给定点的最小凸多边形叫做凸包。</p>
+<p><img src="https://i.loli.net/2021/03/01/lnexKVFcdszy1o9.png" alt="image-20210301175049366.png"></p>
+<h4 id="Andrew算法"><a href="#Andrew算法" class="headerlink" title="Andrew算法"></a>Andrew算法</h4><p>$\quad\quad$首先将点集按照x坐标(第一关键字)，y坐标进行升序排列。显然排序后最小的元素和最大的元素一定在凸包上。他们之间的部分可以分成上下两条链分别求解。求下链时只要从小到大遍历排序后的点列，求上链从大到小遍历即可。</p>
+<p>$\quad\quad$在凸包上，我们从一个点出发逆时针走，轨迹总是左拐的，如果出现右拐，则说明该段不在凸包上。采用栈来记录轨迹上已经走过的点，如果即将入栈的点$P$和栈顶点$S_1$构成的向量方向相较$S_2, S_1$构成向量的方向向右旋转，即叉积$\vec{S_2S_1} \times\vec{S_1P} &lt; 0$，则弹出栈顶，直到$\vec{S_2S_1} \times\vec{S_1P} \geq 0$或栈内仅包含一个元素。</p>
+<p><img src="https://i.loli.net/2021/03/01/SntDQRqyGUWZdb7.png" alt="image-20210301193138704.png"></p>
+<p><img src="https://i.loli.net/2021/03/01/dRhNI73XCswi4k9.png" alt="image2"></p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Point</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x, y;</span><br><span class="line">    Point(<span class="keyword">int</span> _x, <span class="keyword">int</span> _y) : x(_x), y(_y) &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Point&amp; rhs) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> x == rhs.x ? y &lt; rhs.y : x &lt; rhs.x;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Point <span class="keyword">operator</span> - (<span class="keyword">const</span> Point&amp; rhs) &#123;</span><br><span class="line">        <span class="function">Point <span class="title">ret</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">        ret.x = x - rhs.x;</span><br><span class="line">        ret.y = y - rhs.y;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> <span class="keyword">operator</span> ^ (<span class="keyword">const</span> Point&amp; rhs) &#123;</span><br><span class="line">        <span class="keyword">return</span> x * rhs.y - y * rhs.x; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; outerTrees(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; points) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;Point&gt; arr;</span><br><span class="line">        <span class="keyword">int</span> n = points.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            arr.push_back(&#123;points[i][<span class="number">0</span>], points[i][<span class="number">1</span>]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        sort(arr.begin(), arr.end());</span><br><span class="line">        <span class="keyword">int</span> tp = <span class="number">0</span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="title">used</span><span class="params">(n, <span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">st</span><span class="params">(n + <span class="number">5</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (tp &gt;= <span class="number">2</span> &amp;&amp; ((arr[st[tp]] - arr[st[tp - <span class="number">1</span>]]) ^ (arr[i] - arr[st[tp]])) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                used[st[tp--]] = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            st[++tp] = i;</span><br><span class="line">            used[i] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        used[<span class="number">0</span>] = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (used[i]) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">while</span> (tp &gt;= <span class="number">2</span> &amp;&amp; ((arr[st[tp]] - arr[st[tp - <span class="number">1</span>]]) ^ (arr[i] - arr[st[tp]])) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                used[st[tp--]] = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            st[++tp] = i;</span><br><span class="line">            used[i] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; ret;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; tp; ++i) &#123;</span><br><span class="line">           ret.push_back(&#123;arr[st[i]].x, arr[st[i]].y&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>环境表: 环境表是一个字符指针数组，其中每个指针为一个以’\0’为结尾的C字符串地址，全局变量environ环境指针为该指针数组的地址。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> **environ;</span><br></pre></td></tr></table></figure>
-
+<h3 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h3><ul>
+<li>时间复杂度，排序$O(n\log n)$，上下链求解$O(2n)$</li>
+<li>空间复杂度，栈的最大深度为O(n)</li>
+</ul>
 
       
     </div>
@@ -337,7 +305,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/27/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E8%B7%B3%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -351,7 +319,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">快速选择算法</a>
+            <a href="/2021/02/27/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E8%B7%B3%E8%A1%A8/" class="post-title-link" itemprop="url">跳表</a>
         </h2>
 
         <div class="post-meta">
@@ -361,7 +329,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-18 11:32:15" itemprop="dateCreated datePublished" datetime="2020-12-18T11:32:15+08:00">2020-12-18</time>
+              <time title="创建时间：2021-02-27 11:46:47" itemprop="dateCreated datePublished" datetime="2021-02-27T11:46:47+08:00">2021-02-27</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -370,15 +338,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
 
           
 
@@ -391,283 +350,261 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="快速选择算法"><a href="#快速选择算法" class="headerlink" title="快速选择算法"></a>快速选择算法</h4><p>题目描述：在未排序的数组中找到第 <strong>k</strong> 个最大的元素。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,2,1,5,6,4] 和 k &#x3D; 2</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure>
-
-<p>​        快速选择算法本质上是对快速排序算法进行优化，快速排序算法是将数组进行划分，从数组中任选一个元素，调整数组使得左边元素都比它小，其4右侧元素都比它大。通过递归调用快速排序对左侧序列与右侧序列进行排序。而快速选择算法对左侧区间和右侧区间的数据个数与需要寻找的第K大的数字进行比较，选择答案所存在的区间，舍弃了另一个不需要的区间，使算法复杂度降低到$ O(n+ n/2 + n/4 +…)$期望为$O(n)$，但是在最坏的情况下每次选择的都是最大或者最小值，算法时间复杂度为$O(n^2)$。</p>
-<p>针对题目数据，未加入随机数时间为56ms，加入随机数为16ms</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size();</span><br><span class="line">        <span class="keyword">return</span> quick_select(nums, <span class="number">0</span>, n - <span class="number">1</span>, n - k + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">quick_select</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> randPos = l + rand() % (r - l + <span class="number">1</span>);</span><br><span class="line">        swap(nums[l], nums[randPos]);</span><br><span class="line">        <span class="keyword">int</span> pivot = nums[l];</span><br><span class="line">        <span class="keyword">int</span> i = l, j = r;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[j] &gt;= pivot) --j;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[i] = nums[j];</span><br><span class="line">            <span class="keyword">while</span> (i &lt; j &amp;&amp; nums[i] &lt; pivot) ++i;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; j) nums[j] = nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        nums[i] = pivot;</span><br><span class="line">        <span class="keyword">int</span> idx = i - l + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (idx == k) <span class="keyword">return</span> pivot;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> idx &lt; k ? quick_select(nums, i + <span class="number">1</span>, r, k - idx) : quick_select(nums, l, i - <span class="number">1</span>, k);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/17/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/17/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/" class="post-title-link" itemprop="url">最小的k个数</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-17 23:00:13" itemprop="dateCreated datePublished" datetime="2020-12-17T23:00:13+08:00">2020-12-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/">leetcode 373 查找和最小的K对数字</a></p>
-<p>题目描述：给定两个以升序排列的整形数组 nums1 和 nums2, 以及一个整数 k。定义一对值 (u,v)，其中第一个元素来自 nums1，第二个元素来自 nums2。找到和最小的 k 对数字 (u1,v1), (u2,v2) … (uk,vk)。</p>
-<h4 id="做题思路"><a href="#做题思路" class="headerlink" title="做题思路"></a>做题思路</h4><p>由于题目中没有给定数据范围，开始以为是双指针问题，采用贪心策略，但是举了两个例子，指针的移动无法采用贪心的方法，如[1, 3, 100]与[2, 10, 11]， 第二组为(2, 3)，第三组为(1, 10)，第一个数组的指针出现了回退，因此贪心不可行。</p>
-<h5 id="1-暴力做法"><a href="#1-暴力做法" class="headerlink" title="1.暴力做法"></a>1.暴力做法</h5><p>​        枚举数组1与数组2所有可能的组合，并采用<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/">箭指offer 40 最小的k个数</a>的最大堆的方法，维护最小的k对数字，时间复杂度$O(n^2logk)$，运行时间1232ms，勉强过了。</p>
-<h5 id="2-利用数组的排序信息"><a href="#2-利用数组的排序信息" class="headerlink" title="2.利用数组的排序信息"></a>2.利用数组的排序信息</h5><p>​        在暴力做法中完全没有利用到题目中给出的数组为升序排列这个信息，还是以[1, 3, 100]与[2, 10, 11]为例，开始我们将$(nums1[0], nums2[j]) j = 1,2\dots n$放入最小堆中，如果当前堆中弹出的为$(nums1[i], nums2[j])$，那么则将$(nums1[i + 1], nums2[j])$放入到最小堆中。</p>
-<p>数据结构<code>pair&lt;pair&lt;int, int&gt;, int&gt;</code>，分别记录nums1的值、下标， nums2的值。</p>
-<p>最小堆 <code>priority_queue&lt;pair&lt;pair&lt;int, int&gt;, int&gt;, vector&lt;pair&lt;pair&lt;int, int&gt;, int&gt;&gt;, cmp&gt;</code></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cmp</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span> <span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&amp;a, <span class="keyword">const</span> <span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&amp; b)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.first.first + a.second &gt; b.first.first + b.second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; kSmallestPairs(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums2, <span class="keyword">int</span> k) &#123;</span><br><span class="line">        <span class="keyword">int</span> m = nums1.size(), n = nums2.size();</span><br><span class="line">        <span class="keyword">if</span> (m == <span class="number">0</span> || n == <span class="number">0</span>) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        <span class="built_in">priority_queue</span>&lt;<span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;, <span class="built_in">vector</span>&lt;<span class="built_in">pair</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>&gt;&gt;, cmp&gt; pq;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            pq.push(&#123;&#123;nums1[<span class="number">0</span>], <span class="number">0</span>&#125;, nums2[i]&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; ans;</span><br><span class="line">        <span class="keyword">while</span> (!pq.empty() &amp;&amp; cnt &lt; k) &#123;</span><br><span class="line">            <span class="keyword">auto</span> [a, b] = pq.top();</span><br><span class="line">            pq.pop();</span><br><span class="line">            ans.push_back(&#123;a.first, b&#125;);</span><br><span class="line">            <span class="keyword">int</span> idx = a.second;</span><br><span class="line">            <span class="keyword">if</span> (idx + <span class="number">1</span> &lt; m) pq.push(&#123;&#123;nums1[idx + <span class="number">1</span>], idx + <span class="number">1</span>&#125;, b&#125;);</span><br><span class="line">            ++cnt;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/" class="post-title-link" itemprop="url">最长递增子序列</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-16 22:48:07" itemprop="dateCreated datePublished" datetime="2020-12-16T22:48:07+08:00">2020-12-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="最长递增子序列"><a href="#最长递增子序列" class="headerlink" title="最长递增子序列"></a>最长递增子序列</h3><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-increasing-subsequence/">leetcode 300 最长递增子序列</a></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/">leetcode 673 最长递增子序列的个数</a></p>
-<p>对于673题，常规做法动态规划，记录两个状态 最长上升子序列的长度与当前长度对应的子序列的个数。动态规划的规划过程<br>$$<br>arr[j] &gt; arr[i] \<br>if; dp[j] &lt; dp[i] + 1 \quad dp[j] = dp[i] + 1, nums[j] = nums[i] \<br>else ;if ; dp[j] == dp[i] + 1 \quad nums[j] += nums[i]<br>$$<br>动态规划规划的复杂度为$O(n^2)$</p>
-<p>采用树状数组$O(nlogn)$的复杂度，定义Node结构体，记录长度与个数，重载加法操作符。</p>
-<p>维护小于等于当前值区间的<strong>最长长度的上升子序列个数</strong>。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> m, c;</span><br><span class="line">    Node (<span class="keyword">int</span> _m, <span class="keyword">int</span> _c) : m(_m), c(_c) &#123;&#125;</span><br><span class="line">    Node&amp; <span class="keyword">operator</span> +=(Node &amp;rhs) &#123;</span><br><span class="line">        <span class="keyword">if</span> (m &lt; rhs.m) &#123;</span><br><span class="line">            m = rhs.m;</span><br><span class="line">            c = rhs.c;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (m == rhs.m) &#123;</span><br><span class="line">            c += rhs.c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findNumberOfLIS</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; arr = nums;</span><br><span class="line">        sort(arr.begin(), arr.end());</span><br><span class="line">        arr.erase(unique(arr.begin(), arr.end()), arr.end());</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; mp;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.size(); ++i) &#123;</span><br><span class="line">            mp[arr[i]] = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;Node&gt; <span class="title">tree</span><span class="params">(<span class="number">2010</span>, &#123;<span class="number">0</span>, <span class="number">0</span>&#125;)</span></span>;</span><br><span class="line">        <span class="function">Node <span class="title">res</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> val : nums) &#123;</span><br><span class="line">            <span class="function">Node <span class="title">tmp</span><span class="params">(<span class="number">0</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = mp[val] - <span class="number">1</span>; k &gt; <span class="number">0</span>; k -= (k &amp; -k)) &#123;</span><br><span class="line">                tmp += tree[k];</span><br><span class="line">            &#125;</span><br><span class="line">            tmp.m++;</span><br><span class="line">            res += tmp;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = mp[val]; k &lt; <span class="number">2010</span>; k += (k &amp; -k)) &#123;</span><br><span class="line">                tree[k] += tmp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res.c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/DTMF%E4%BF%A1%E5%8F%B7%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%AF%86%E5%88%AB/" class="post-title-link" itemprop="url">DTMF信号检测与识别</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-15 22:17:52" itemprop="dateCreated datePublished" datetime="2020-12-15T22:17:52+08:00">2020-12-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">信号处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="DTMF信号的检测与识别"><a href="#DTMF信号的检测与识别" class="headerlink" title="DTMF信号的检测与识别"></a>DTMF信号的检测与识别</h3><h3 id="1-程序设计思路与框图"><a href="#1-程序设计思路与框图" class="headerlink" title="1. 程序设计思路与框图"></a>1. 程序设计思路与框图</h3><h4 id="1-1-FFT直接计算"><a href="#1-1-FFT直接计算" class="headerlink" title="1.1 FFT直接计算"></a>1.1 FFT直接计算</h4><p>利用FFT计算输入的信号的DFT频域信息，并找到两个峰值频率点，从而检测DTMF信号。</p>
+          <h3 id="跳表-Probabilistic-Alternative-to-Balanced-Trees"><a href="#跳表-Probabilistic-Alternative-to-Balanced-Trees" class="headerlink" title="跳表(Probabilistic Alternative to Balanced Trees)"></a>跳表(Probabilistic Alternative to Balanced Trees)</h3><p>​        跳跃表是一种有序的数据结构，它通过在每个节点中维持多个指向其他节点的指针，从而达到快速访问节点的目的。跳表的期望空间复杂度为$O(n)$，跳表的查询，插入和删除操作的期望时间复杂度都为$O(logn)$。</p>
+<p>​        链表加多级索引的结构就是跳表。跳表的每一层都是一个有序链表，每层位于第i层的节点有p的概率出现在第i+1层，p为常数。</p>
+<p><img src="https://i.loli.net/2021/02/27/F6PO2UqsjEpv4hJ.png" alt="search_path_on_skiplist.png"></p>
+<h3 id="复杂度证明"><a href="#复杂度证明" class="headerlink" title="复杂度证明"></a>复杂度证明</h3><h5 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a><strong>空间复杂度</strong></h5><p>​        第一层的期望值为$n$, 第二层的期望值为$np$, 第三层的期望值为$np^2$，因此空间复杂度的期望值为$\sum\limits_{i = 0}^{+\infty}np^i=\frac{n}{1 - p}$。因为p为常数，因此跳表期望的空间复杂度为$O(n)$。</p>
+<p><strong>时间复杂度</strong></p>
+<p>跳表最后一层节点的个数为$\frac{1}{p}$，因为再上一层的期望值为1(无意义)。因此层数m为<br>$$<br>np^{m - 1}=\frac{1}{p} \\<br>(\frac{1}{p})^m=n \\<br>m = \log_{\frac{1}{p}}n<br>$$<br>​        跳表skiplist的平均查找长度，查找长度指的是查找路径上跨越的跳数，查找过程中的比较次数等于查找长度加1（每比较一次要么向下一层，要么到本层的右侧节点)。每个节点在进行插入的时候，它的层数是由随机函数randomLevel()计算出来的，随机的计算不依赖于其它的节点，每个节点是独立同分布的，每次插入过程都是完全独立的。</p>
+<p>​        为了计算查找长度，我们将逆向还原查找过程，从右下方第一层最后到达的那个节点开始，沿着查找路径向左，向上回溯。假设当回溯到某个节点的时候，它才被插入，这虽然相当于改变了节点的插入顺序，但从统计上不影响整个skiplist的形成结构。</p>
+<p>如果某一个节点有上层节点的话，则我们需要向上走，整个查找过程类似楼梯的形状，<strong>每个节点第一被访问一定是位于其最顶层</strong>。</p>
 <ul>
-<li><p>数据预处理，作业给定的为.wav文件，其中数据为16bit的short类型，文件指针偏移40个字节的位置记录了wav数据块的字节数，调用read函数将之后的数据读入到数组中。</p>
-</li>
-<li><p>编写类FFTMethod，调用第一次作业编写的时域基2DFT对音频信号做FFT变换。找到频域中两个峰值对应的数字角频率，从而计算得到模拟角频率，找到对应的DTMF信号</p>
-</li>
-<li><p>程序框图</p>
-<img src="https://i.loli.net/2020/12/15/qX4PvIlB36bjSLc.png" alt="image-20201215223342850.png" height=400>
+<li>如果节点x有第i+1，那么我们需要向上走，这种情况概率为p</li>
+<li>如果节点没有第i+1层指针，那么我们需要向左走，这种情况的概率为1-p</li>
+</ul>
+<p>用C(k)表示向上攀爬k个层级所需要走过的平均查找路径长度，因此有<br>$$<br>C(k) = (1 - p)*(C(k) + 1) + p * (C(k - 1) + 1) \\<br>C(k) = \frac{1}{p} + C(k - 1) \\<br>C(k) = \frac{k}{p}<br>$$<br>n个节点跳表的层数为$\log_{\frac{1}{p}}n$， 因此所需时间为$\frac{\log_{\frac{1}{p}}n}{p}$，即平均时间复杂度为$O(\log n)$</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>数据结构SkipListNode，skiplist真正有数据只有下面一层的数据节点，每个节点的后继就是level[0],</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SkipListNode</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">	<span class="built_in">vector</span>&lt;SkipListNode *&gt; level;</span><br><span class="line">	SkipListNode (<span class="keyword">int</span> _val, <span class="keyword">int</span> sz=<span class="number">32</span>) : val(_val), level(sz, <span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
+
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Skiplist</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    SkipListNode *head, *tail;</span><br><span class="line">    <span class="keyword">int</span> level, length;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> MAXL = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> P = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> S = <span class="number">0xFFFF</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> PS = S / <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    Skiplist() &#123;</span><br><span class="line">        level = length = <span class="number">0</span>;</span><br><span class="line">        tail = <span class="keyword">new</span> SkipListNode(INT_MAX, <span class="number">0</span>);</span><br><span class="line">        head = <span class="keyword">new</span> SkipListNode(INT_MAX);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; MAXL; ++i) &#123; </span><br><span class="line">        	head-&gt;level[i] = tail;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">SkipListNode* <span class="title">find</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        SkipListNode *p = head;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (p-&gt;level[i] &amp;&amp; p-&gt;level[i]-&gt;val &lt; val) &#123;</span><br><span class="line">                p = p-&gt;level[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p-&gt;level[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        SkipListNode *p = find(target);</span><br><span class="line">        <span class="keyword">return</span> p-&gt;val == target;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;SkipListNode *&gt; <span class="title">update</span><span class="params">(MAXL)</span></span>;</span><br><span class="line">        SkipListNode *p = head;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (p-&gt;level[i] &amp;&amp; p-&gt;level[i]-&gt;val &lt; val) &#123;</span><br><span class="line">                p = p-&gt;level[i];</span><br><span class="line">            &#125;</span><br><span class="line">            update[i] = p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> lv = randomLevel();</span><br><span class="line">        <span class="keyword">if</span> (lv &gt; level) &#123;</span><br><span class="line">            lv = ++level;</span><br><span class="line">            update[lv - <span class="number">1</span>] = head; </span><br><span class="line">        &#125;</span><br><span class="line">        SkipListNode *newNode = <span class="keyword">new</span> SkipListNode(val, lv);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = lv - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            p = update[i];</span><br><span class="line">            newNode-&gt;level[i] = p-&gt;level[i];</span><br><span class="line">            p-&gt;level[i] = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">        ++length;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">erase</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;SkipListNode *&gt; <span class="title">update</span><span class="params">(MAXL + <span class="number">1</span>)</span></span>;</span><br><span class="line">        SkipListNode *p = head;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = level - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            <span class="keyword">while</span> (p-&gt;level[i] &amp;&amp; p-&gt;level[i]-&gt;val &lt; val) &#123;</span><br><span class="line">                p = p-&gt;level[i];</span><br><span class="line">            &#125;</span><br><span class="line">            update[i] = p;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p-&gt;level[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;val != val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; level; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (update[i]-&gt;level[i] != p) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            update[i]-&gt;level[i] = p-&gt;level[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (level &gt; <span class="number">0</span> &amp;&amp; head-&gt;level[level - <span class="number">1</span>] == tail) --level;</span><br><span class="line">        --length;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">randomLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> lv = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (lv &lt; MAXL &amp;&amp; (rand() &amp; S) &lt; PS) ++lv;</span><br><span class="line">        <span class="keyword">return</span> lv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a target="_blank" rel="noopener" href="http://zhangtielei.com/posts/blog-redis-skiplist.html">http://zhangtielei.com/posts/blog-redis-skiplist.html</a></p>
+<p><a href="ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf">ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf</a></p>
+<p><a target="_blank" rel="noopener" href="https://oi-wiki.org/ds/skiplist/#_4">https://oi-wiki.org/ds/skiplist/#_4</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/24/JAVA/JAVA%E5%8F%8D%E5%B0%84/" class="post-title-link" itemprop="url">JAVA反射</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-24 20:51:45" itemprop="dateCreated datePublished" datetime="2021-02-24T20:51:45+08:00">2021-02-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="JAVA-反射"><a href="#JAVA-反射" class="headerlink" title="JAVA 反射"></a>JAVA 反射</h3><p>反射是为了解决运行期，对某个对象一无所知的情况下，调用其方法，JVM为每一个加载的class创建一个Class类型的实例，并关联起来。</p>
+<p>通过Class实例获取class信息的方法称为反射(Reflection)</p>
+<h4 id="1-访问字段"><a href="#1-访问字段" class="headerlink" title="1. 访问字段"></a>1. 访问字段</h4><ul>
+<li><p>Java的反射API提供的<code>Field</code>类封装了字段的所有信息：</p>
+</li>
+<li><p>通过<code>Class</code>实例的方法可以获取<code>Field</code>实例：<code>getField()</code>，<code>getFields()</code>，<code>getDeclaredField()</code>，<code>getDeclaredFields()</code>；</p>
+</li>
+<li><p>通过Field实例可以获取字段信息：<code>getName()</code>，<code>getType()</code>，<code>getModifiers()</code>；</p>
+</li>
+<li><p>通过Field实例可以读取或设置某个对象的字段，如果存在访问限制，要首先调用<code>setAccessible(true)</code>来访问非<code>public</code>字段。</p>
+</li>
+<li><p>通过反射读写字段是一种非常规方法，它会破坏对象的封装。****</p>
 </li>
 </ul>
-<h4 id="1-2-Goertzel-算法"><a href="#1-2-Goertzel-算法" class="headerlink" title="1.2 Goertzel 算法"></a>1.2 Goertzel 算法</h4><p>计算FFT包含了信号整个频域的信息，而我们只关注DTMF信号的八个特定频率，因此算法存在冗余。在FFT中如果我们只关注某一个特定的数字角频率，$X[k] = \sum_{n = 0}^{N- 1}x[m]W_n^{m -N}$，其可以视为$x[n]$通过冲激响应为$W_N^{-nk}$的LTI系统在N时刻的取值。第k个频点对应的差分方程为：<br>$$<br>V_k[n] = 2cos(\omega_k)V_k[n - 1] - V_k[n-2] + x[n] \<br>X_k[n] = V_k[n] - W_N^k[n - 1], v[-1] = v[-2] = 0<br>$$<br>其本质是一个动态规划的过程，由递推关系可以得到n时刻的状态，从而确定该频点的FFT。得到八个特定频点的FFT值后，选择两个峰值，从而确定DTMF信号。</p>
-<img src="https://i.loli.net/2020/12/15/WPjz2ItDx5vhKuM.png" alt="image-20201215224401308.png" height=400>
+<h4 id="2-调用方法"><a href="#2-调用方法" class="headerlink" title="2.调用方法"></a>2.调用方法</h4><h4 id="3-调用构造方法、获取继承关系"><a href="#3-调用构造方法、获取继承关系" class="headerlink" title="3.调用构造方法、获取继承关系"></a>3.调用构造方法、获取继承关系</h4><h4 id="4-动态代理"><a href="#4-动态代理" class="headerlink" title="4.动态代理"></a>4.动态代理</h4>
+      
+    </div>
 
-<h4 id="1-3一串DTMF信号的识别"><a href="#1-3一串DTMF信号的识别" class="headerlink" title="1.3一串DTMF信号的识别"></a>1.3一串DTMF信号的识别</h4><p>下图为一串DTMF信号的时域图像，可以看到其中包含了15个DTMF信号，我们要做的工作是确定每一个信号的起始于结束位置，直接使用强度值进行判断存在较大的误差，因此选择滑动窗取平均的方式。程序中选择滑动窗大小为64，计算信号每个点对应的滑动窗内的平均能量，并与阈值作比较，从而确定每一个信号的起始结束位置。之后将每一段信号采用上述的两种方法进行信号判断</p>
-<p><img src="https://i.loli.net/2020/12/15/mMfArlcUnZO8sPT.png" alt="image-20201215224445627.png"></p>
-<ul>
-<li>程序框图</li>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/24/JAVA/JAVA-Spring/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/24/JAVA/JAVA-Spring/" class="post-title-link" itemprop="url">JAVA_Spring</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-24 20:17:40" itemprop="dateCreated datePublished" datetime="2021-02-24T20:17:40+08:00">2021-02-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="IOC-Inversion-of-Control控制反转"><a href="#IOC-Inversion-of-Control控制反转" class="headerlink" title="IOC(Inversion of Control控制反转)"></a>IOC(Inversion of Control控制反转)</h3><p>应用本身不负责依赖对象的创建和维护，依赖对象的创建和维护是由外部容器负责的称为控制反转。</p>
+<p>IOC容器管理的对象称为Bean，Bean是由Spring容器初始化，装配及管理的对象。</p>
+<p><img src="https://i.loli.net/2021/02/24/pkob3n8iRSvwZmW.jpg" alt="IOC_DI.JPG"></p>
+<h3 id="DI-Dependency-Injection依赖注入"><a href="#DI-Dependency-Injection依赖注入" class="headerlink" title="DI(Dependency Injection依赖注入)"></a>DI(Dependency Injection依赖注入)</h3><h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/22/JAVA/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/22/JAVA/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-22 20:03:14" itemprop="dateCreated datePublished" datetime="2021-02-22T20:03:14+08:00">2021-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h3><p>设计模式本质上是面向对象设计原则的实际运用。</p>
+<h4 id="1-1设计模式分类"><a href="#1-1设计模式分类" class="headerlink" title="1.1设计模式分类"></a>1.1设计模式分类</h4><ul>
+<li>创建型模式</li>
+<li>结构型模式</li>
+<li>行为型模式</li>
 </ul>
-<img src="https://i.loli.net/2020/12/15/5Olr6ciBUpfImsC.png" alt="image-20201215225103976.png" height=400>
-
-<h3 id="2-两种算法的结果与复杂度比较"><a href="#2-两种算法的结果与复杂度比较" class="headerlink" title="2.两种算法的结果与复杂度比较"></a>2.两种算法的结果与复杂度比较</h3><p>实验结果：</p>
-<p><img src="https://i.loli.net/2020/12/15/oUfzLdDCkjwVQKH.png" alt="image-20201215225340386.png"></p>
-<p>复杂度分析：</p>
+<h4 id="UML-类图"><a href="#UML-类图" class="headerlink" title="UML 类图"></a>UML 类图</h4><h4 id="2-设计模式"><a href="#2-设计模式" class="headerlink" title="2.设计模式"></a>2.设计模式</h4><ul>
+<li>代理模式：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/daniels/p/8242592.html">https://www.cnblogs.com/daniels/p/8242592.html</a></li>
+</ul>
+<p><img src="https://images2017.cnblogs.com/blog/1071931/201801/1071931-20180108134122472-1822105846.png" alt="img"></p>
 <ul>
-<li><p>FFT方法采用DFT计算了所有的频点信息，时间复杂度为$O(nlogn)$，寻找峰值的复杂度为O(n)，总的时间复杂度为$O(nlogn) + O(n)$</p>
-</li>
-<li><p>Goertzel方法只计算特定的8个频点，并采用差分方程的形式递推计算，时间复杂度为O(n)</p>
-</li>
-<li><p>FFT方法需要存储所有的频域信息，空间复杂度为$O(n)$， Goertzel方法在递推过程中只需要V[i-1]、V[i-2]这两个状态， 空间复杂度为$O(1)$</p>
-</li>
+<li>中介隔离作用， 代理类对象可以在客户类和委托对象之间起到中介的作用。</li>
+<li>开闭原则，增加功能。代理类本身并不真正实现服务，而是同过调用委托类的相关方法，来提供特定的服务。可以通过给代理类增加额外的功能来扩展委托类的功能。</li>
+<li>java动态代理 <a target="_blank" rel="noopener" href="https://blog.csdn.net/yaomingyang/article/details/80981004">https://blog.csdn.net/yaomingyang/article/details/80981004</a></li>
 </ul>
 
       
@@ -688,7 +625,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/a%20simple%20shell/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/Miller-Rabin%E7%B4%A0%E6%95%B0%E6%8E%A2%E6%B5%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -702,7 +639,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/a%20simple%20shell/" class="post-title-link" itemprop="url">unix shell简单实现</a>
+            <a href="/2021/02/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/Miller-Rabin%E7%B4%A0%E6%95%B0%E6%8E%A2%E6%B5%8B/" class="post-title-link" itemprop="url">Miller-Rabin素数探测</a>
         </h2>
 
         <div class="post-meta">
@@ -712,7 +649,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-14 20:21:10" itemprop="dateCreated datePublished" datetime="2020-12-14T20:21:10+08:00">2020-12-14</time>
+              <time title="创建时间：2021-02-15 21:30:13" itemprop="dateCreated datePublished" datetime="2021-02-15T21:30:13+08:00">2021-02-15</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -721,15 +658,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
 
           
 
@@ -742,161 +670,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="1-shell整体框架"><a href="#1-shell整体框架" class="headerlink" title="1.shell整体框架"></a>1.shell整体框架</h3><p><a target="_blank" rel="noopener" href="https://github.com/sty16/simple_shell">github项目地址</a></p>
-<p>shell程序整体框架，读取用户输入命令并执行</p>
-<p><img src="https://i.loli.net/2020/12/14/fmitdD6aWzpHGh9.png" alt="图片1.png"></p>
-<p>进入main函数后，循环执行从标准输入读取命令，解析命令，将命令字符串以空格分隔，解析为命令与参数。判断是否为内建命令(history, jobs, fb, exit)。如果不是则父进程通过fork()创建子进程，子进程执行execv()完成进程代码段与数据段内容替换。</p>
-<h3 id="2-输入输出重定向"><a href="#2-输入输出重定向" class="headerlink" title="2.输入输出重定向"></a>2.输入输出重定向</h3><p>定义命令结构体，其包含argc(命令参数个数)、bg(后台命令标志)、name(命令名称)、argv(命令参数)、fds(重定向文件描述符)等五个成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">command</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> argc;</span><br><span class="line">    <span class="keyword">int</span> bg;</span><br><span class="line">    <span class="built_in">string</span> name;</span><br><span class="line">    <span class="built_in">string</span> argv[ARG_MAX];</span><br><span class="line">    <span class="keyword">int</span> fds[<span class="number">2</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>解析指令时command &gt; file检查是否有&gt;或&lt;操作符，有则检查后面是否有文件，若果有文件则以读写的方式打开文件，并将返回文件描述符记录到命令结构体中，在fork()后的子进程中，采用dup2()函数将子进程的输入、输出重定向fds所指向的文件描述符。</p>
-<p><img src="https://i.loli.net/2020/12/14/5wjpN4sEdIFifTb.png" alt="图片7.png"></p>
-<h3 id="3-实现管道"><a href="#3-实现管道" class="headerlink" title="3.实现管道"></a>3.实现管道</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">commands</span> &#123;</span></span><br><span class="line">    <span class="built_in">string</span> key;</span><br><span class="line">    <span class="keyword">int</span> cmd_counts;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">command</span>* <span class="title">cmds</span>[<span class="title">CMD_MAX</span>];</span></span><br><span class="line">    commands *pre, *next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>定义命令集(commands)结构体，成员cmd_counts为命令个数，cmds记录每一个解析后的命令指针。</p>
-<ul>
-<li><p>检查输入的字符中是否有”|”，如果有按照|将字符串分隔开，并解析每一个命令(支持多条命令)</p>
-</li>
-<li><p>创建管道，前一个命令的stdout重定向到管道的写端，后一个命令的stdin重定向的管道的读端。</p>
-</li>
-<li><p>Fork()创建每一个子进程，执行指令</p>
-<p><img src="https://i.loli.net/2020/12/14/htSEg2HT4DQG8on.png" alt="图片2.png"></p>
-<p><img src="https://i.loli.net/2020/12/14/bH7i2nsAtNSwZaO.png" alt="图片8.png"></p>
-</li>
-</ul>
-<h3 id="4-作业控制"><a href="#4-作业控制" class="headerlink" title="4.作业控制"></a>4.作业控制</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">job_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> jid;</span><br><span class="line">    <span class="keyword">int</span> state;</span><br><span class="line">    <span class="built_in">string</span> cmd;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>定义job_t结构体，包含成员进程编号，作业编号，作业状态，命令字符串。定义作业运行状态：UNDEF:0、FG:1、BG:2、 ST:3</p>
-<p>定义JOBCtrl类，来控制作业的执行。</p>
-<p><img src="https://i.loli.net/2020/12/14/UwmWtxdeJrfNVgo.png" alt="图片3.png"></p>
-<p>父进程fork()创建子进程后，父进程将作业添加到作业列表，并定义SIG_CHLD信号处理函数，当子进程结束执行时，发送SIG_CH</p>
-<p>LD信号给父进程。父进程捕捉信号，在信号处理函数中调用waitpid()函数获得子进程pid，将其从作业列表中删除。</p>
-<h3 id="5-后台执行程序"><a href="#5-后台执行程序" class="headerlink" title="5.后台执行程序"></a>5.后台执行程序</h3><p><img src="https://i.loli.net/2020/12/14/T73QYpMuF2waIZH.png" alt="图片4.png"></p>
-<p>如果是前台执行程序，则父进程处于while循环的等待状态，直到子进程执行完毕向父进程发送SIG_CHLG信号，父进程捕捉到信号后将其从作业列表中删除后，结束while循环等待。如果是后台执行程序则打印作业相关信息并继续执行读取用户输入。</p>
-<h3 id="6-作业控制-jobs-fg-bg"><a href="#6-作业控制-jobs-fg-bg" class="headerlink" title="6.作业控制 jobs fg bg"></a>6.作业控制 jobs fg bg</h3><ul>
-<li><p>jobs查看所有作业的运行状态， 将作业列表中的所有作业打印输出</p>
-</li>
-<li><p>fg % 1，从作业列表中找到后台运行的作业，将其状态变为FG，并执行等待，直到子进程结束发出SIG_CHLD信号，从作业列表中删除。</p>
-</li>
-<li><p>bg % 1，父进程注册SIGTSTP信号处理，CRTL+Z, 发送STGTSTP信号给子进程，暂停子进程执行。当执行bg命令时，父进程向暂停的子进程发送SIGCONT信号恢复子进程的执行。</p>
-<p><img src="https://i.loli.net/2020/12/14/SstzXpCmdu31U2A.png" alt="图片9.png"></p>
-<h3 id="7-历史命令"><a href="#7-历史命令" class="headerlink" title="7.历史命令"></a>7.历史命令</h3></li>
-</ul>
-<p>实现了CMDCache类</p>
-<p><img src="https://i.loli.net/2020/12/14/yOtWgKl5DLiPq6G.png" alt="图片5.png"></p>
-<ul>
-<li><p>哈希表+双向链表维护历史命令，哈希表记录输入字符串与解析后的命令结构体的映射，双向链表记录历史输入命令</p>
-</li>
-<li><p>LRU(least Recently used)算法，当输入字符串已经被解析过时，将命令从双向链表中删除，并重新命令列表头部插入。输入字符串未解析过，解析后插入列表头部。</p>
-</li>
-<li><p>history命令 将历史命令按输入顺序的倒序排列输出</p>
-</li>
-<li><p>up、down命令获取上一条输入命令、下一条命令输入</p>
-</li>
-</ul>
-<p><img src="https://i.loli.net/2020/12/14/fCrIyUwi1RMmaqb.png" alt="图片11.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/pipe/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="tys">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="TYS的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/pipe/" class="post-title-link" itemprop="url">pipe</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-12 14:36:56" itemprop="dateCreated datePublished" datetime="2020-12-12T14:36:56+08:00">2020-12-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-管道的概念"><a href="#1-管道的概念" class="headerlink" title="1.管道的概念"></a>1.管道的概念</h3><p>管道是一种最基本的IPC机制，作用于有血缘关系的进程之间，完成数据传递，通过pipe()系统调用即可创建一个管道。</p>
-<ul>
-<li>其本质是一个伪文件，实为内核缓冲区</li>
-<li>两个文件描述符引用，一个表示读端，一个表示写端</li>
-<li>管道采用半双工通信方式，数据只能在一个方向流动</li>
-<li>只能在有公共祖先的进程间使用管道</li>
-</ul>
-<h3 id="2-pipe函数"><a href="#2-pipe函数" class="headerlink" title="2.pipe函数"></a>2.pipe函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pipe</span><span class="params">(<span class="keyword">int</span> (*pipefd)[<span class="number">2</span>])</span></span>;   </span><br><span class="line">ret <span class="number">0</span> : SUCCESS</span><br><span class="line">	<span class="number">-1</span> : Failure</span><br></pre></td></tr></table></figure>
-
-<p>函数调用成功返回read/write两个文件描述符，无需open，需要手动close。</p>
-<p><img src="https://i.loli.net/2020/12/14/DyFH2peimEcnjMf.png" alt="img"></p>
-<ul>
-<li><p>父进程调用pipe函数创建管道，得到两个文件描述符fd[0]、fd[1]指向管道的读端和写端</p>
-</li>
-<li><p>父进程调用fork()创建子进程，子进程继承父进程文件描述符。</p>
-</li>
-<li><p>父进程关闭管道读端，子进程关闭管道写端，父进程可以向管道中写入数据，子进程将管道中数据读出。</p>
-</li>
-</ul>
-<h3 id="3-管道读写行为"><a href="#3-管道读写行为" class="headerlink" title="3.管道读写行为"></a>3.管道读写行为</h3><p> 使用管道需要注意以下4种特殊情况</p>
-<ul>
-<li>如果所有指向管道写端的文件描述符都关闭了（管道写端引用计数为0），而仍然有进程从管道的读端读数据，那么管道中剩余的数据都被读取后，再次read会返回0，就像读到文件末尾一样。</li>
-<li>如果有指向管道写端的文件描述符没关闭（管道写端引用计数大于0），而持有管道写端的进程也没有向管道中写数据，这时有进程从管道读端读数据，那么管道中剩余的数据都被读取后，再次read会阻塞，直到管道中有数据可读了才读取数据并返回。</li>
-<li>如果所有指向管道读端的文件描述符都关闭了（管道读端引用计数为0），这时有进程向管道的写端write，那么该进程会收到信号SIGPIPE，通常会导致进程异常终止。当然也可以对SIGPIPE信号实施捕捉，不终止进程。具体方法信号章节详细介绍。</li>
-<li>如果有指向管道读端的文件描述符没关闭（管道读端引用计数大于0），而持有管道读端的进程也没有从管道中读数据，这时有进程向管道写端写数据，那么在管道被写满时再次write会阻塞，直到管道中有空位置了才写入数据并返回。</li>
-</ul>
-<h3 id="4-示例程序-采用管道实现-ls-home-wc"><a href="#4-示例程序-采用管道实现-ls-home-wc" class="headerlink" title="4.示例程序 采用管道实现 ls /home | wc"></a>4.示例程序 采用管道实现 ls /home | wc</h3><p>主线程调用fork()创建两个进程一个执行ls /home，另一个执行 wc，利用管道重定向两个进程的stdout，stdin。</p>
-<p>踩坑记录，在主线程wait(NULL)前，需要手动关闭主线程的所有管道，否则第二个进程会处于读阻塞的状态，因此发生了死锁</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> f[<span class="number">2</span>];</span><br><span class="line">    pipe(f);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">pid_t</span> pid = fork();</span><br><span class="line">        <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == <span class="number">1</span>) &#123;</span><br><span class="line">                close(f[<span class="number">1</span>]);</span><br><span class="line">                dup2(f[<span class="number">0</span>], <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">char</span> *name = <span class="string">&quot;/usr/bin/wc&quot;</span>;</span><br><span class="line">                <span class="keyword">char</span> **argv = <span class="keyword">new</span> <span class="keyword">char</span>*[<span class="number">1</span>];</span><br><span class="line">                argv[<span class="number">0</span>] = <span class="string">&quot;/usr/bin/wc&quot;</span>;</span><br><span class="line">                <span class="keyword">int</span> exet_st = execv(name, argv);</span><br><span class="line">                close(f[<span class="number">0</span>]);</span><br><span class="line">                _exit(EXIT_SUCCESS);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                close(f[<span class="number">0</span>]);</span><br><span class="line">                <span class="keyword">char</span> buff[] = <span class="string">&quot;test&quot;</span>;</span><br><span class="line">                write(f[<span class="number">1</span>], buff, <span class="built_in">strlen</span>(buff));</span><br><span class="line">                close(f[<span class="number">1</span>]);</span><br><span class="line">                _exit(EXIT_SUCCESS);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    close(f[<span class="number">0</span>]);</span><br><span class="line">    close(f[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</span><br><span class="line">        wait(<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+          <h3 id="Miller-Rabin素数探测"><a href="#Miller-Rabin素数探测" class="headerlink" title="Miller-Rabin素数探测"></a>Miller-Rabin素数探测</h3><p>费马小定理，如果p为质数，且$gcd(a,p)=1$，那么$a^{p - 1} \equiv 1 (mod\ p)$， 如果p为质数，且a，p互质，那么a的p-1次方除以p的余数等于1。</p>
+<p>二次探测定理， 如果p是素数，且x是小于p的正整数，且$x^2 \equiv 1 (mod\ p)$，那么$x = 1$或者$x =p - 1$。</p>
+<p>Miller-Rabin素数探测，将p-1(偶数)表示为$d \times 2^r$，其中d为奇数，如果p为素数，那么存在某个$0 \le i &lt; r$使得$a^{d*2^{r - i}} mod\ n = n - 1$，或者$a^d = 1$。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> ll = <span class="keyword">long</span> <span class="keyword">long</span>;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; prime&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>&#125;;</span><br><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(ll a, ll b, ll p)</span> </span>&#123;</span><br><span class="line">	ll ans = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (b) &#123;</span><br><span class="line">		<span class="keyword">if</span> (b &amp; <span class="number">1</span>) ans = ans * a % p;</span><br><span class="line">		a = a * a % p;</span><br><span class="line">		b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 如果是long long会发生溢出，则需要在模运算意义下计算快速积</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">TwiceDetect</span><span class="params">(ll a, ll b, ll p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> r = __builtin_ctz(b);</span><br><span class="line">    ll d = b &gt;&gt; t;</span><br><span class="line">    ll x, y;</span><br><span class="line">    x = y = qpow(a, d, p);</span><br><span class="line">    <span class="keyword">while</span> (r--) &#123;</span><br><span class="line">        y = x * x % p;</span><br><span class="line">        <span class="keyword">if</span> (y == <span class="number">1</span> &amp;&amp; x != <span class="number">1</span> &amp;&amp; x != p - <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>; <span class="comment">//是合数返回1</span></span><br><span class="line">        x = y;</span><br><span class="line">    &#125;</span><br><span class="line">   	<span class="keyword">return</span> y != <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">miller_rabin</span><span class="params">(ll p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="number">2</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (p &lt; <span class="number">2</span> || p % <span class="number">2</span> == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">        ll base = prime[i];</span><br><span class="line">        <span class="keyword">if</span> (p == base) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (TwiceDetect(base, p - <span class="number">1</span>, p)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
       
@@ -917,7 +694,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%8C%BA%E9%97%B4%E5%92%8C/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/05/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E7%BA%BF%E6%AE%B5%E6%A0%91I/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -931,7 +708,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%8C%BA%E9%97%B4%E5%92%8C/" class="post-title-link" itemprop="url">区间和</a>
+            <a href="/2021/02/05/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E7%BA%BF%E6%AE%B5%E6%A0%91I/" class="post-title-link" itemprop="url">线段树I</a>
         </h2>
 
         <div class="post-meta">
@@ -941,7 +718,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-10 15:17:40" itemprop="dateCreated datePublished" datetime="2020-12-10T15:17:40+08:00">2020-12-10</time>
+              <time title="创建时间：2021-02-05 18:03:40" itemprop="dateCreated datePublished" datetime="2021-02-05T18:03:40+08:00">2021-02-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -950,15 +727,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
 
           
 
@@ -971,15 +739,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/submissions/">leetcode 1477 找两个和为目标值且不重叠的子数组</a></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/minimum-operations-to-reduce-x-to-zero/">leetcode 1658 将x减小到0的最小次数</a></p>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-points-you-can-obtain-from-cards/">leetcode 1423 可获得的最大点数</a></p>
-<p>题目中给出的数据范围$1\le arr[i]\le10^4$，因此找到一段区间和为某一个数值，可以采用双指针的方式，如果当前区域的和大于target，则移动前面的指针，直到区间和小于等于target。如果存在负数或零，则采用前缀和与哈希表的方式。</p>
-<p>对于题目1477 其要找到满足等于给定和的最小的两个不想交的区间，采用dp[j]表示区间右端点小于等于j的最小区间长度。<br>$$<br>dp[j] = \min(dp[j - 1], j - i + 1) \<br>ans = \min(ans, dp[i - 1] + j - i + 1)<br>$$</p>
- <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minSumOfLengths</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; arr, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = arr.size();</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, sum = <span class="number">0</span>, ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(n, <span class="number">0x3f3f3f3f</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            sum += arr[j];</span><br><span class="line">            <span class="keyword">while</span> (sum &gt; target &amp;&amp; i &lt; j) &#123;</span><br><span class="line">                sum -= arr[i];</span><br><span class="line">                ++i;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (j &gt; <span class="number">0</span>) dp[j] = dp[j - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">                dp[j] = min(dp[j], j - i + <span class="number">1</span>);</span><br><span class="line">                <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    ans = min(ans, dp[i - <span class="number">1</span>] + j - i + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == <span class="number">0x3f3f3f3f</span> ? <span class="number">-1</span> : ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+          <h3 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h3><p>线段树本质上开了O(4n)的空间来维护了数组区间的性质。根节点从下标1开始</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// p为当前l, r区间对应的下标， l为当前区键的左侧下标，r为右侧下标</span></span><br><span class="line">    <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">        <span class="comment">//更新a[p]</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    build(p &lt;&lt; <span class="number">1</span>, l , mid);</span><br><span class="line">    build(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, mid + <span class="number">1</span>, r);</span><br><span class="line">    a[p] = f(a[p &lt;&lt; <span class="number">1</span>], a[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>对于1658题，首先找到一段区间和为x，然后调整两个指针的位置使得两端区间和为x</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">minOperations</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.size(), ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">        <span class="keyword">int</span> j = n - <span class="number">1</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; sum &lt; x) &#123;</span><br><span class="line">            sum += nums[j];</span><br><span class="line">            --j;</span><br><span class="line">        &#125;</span><br><span class="line">        ++j;</span><br><span class="line">        <span class="keyword">if</span> (sum == x) ans = n - j;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            sum += nums[i];</span><br><span class="line">            <span class="keyword">while</span> (j &lt; n &amp;&amp; sum &gt; x) &#123;</span><br><span class="line">                sum -= nums[j];</span><br><span class="line">                ++j;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (sum == x &amp;&amp; j &gt; i) &#123;</span><br><span class="line">                ans = min(ans, i + <span class="number">1</span> + n - j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans == <span class="number">0x3f3f3f3f</span> ? <span class="number">-1</span> : ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>惰性更新，当更新区间包含了当前的区间[l, r]，只需要更新当前的节点并进行标记。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> ul, <span class="keyword">int</span> ur, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
       
@@ -1000,7 +764,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2020/12/09/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/04/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E5%B9%B6%E6%9F%A5%E9%9B%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -1014,7 +778,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/12/09/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E7%BA%BF%E6%AE%B5%E6%A0%91/" class="post-title-link" itemprop="url">线段树</a>
+            <a href="/2021/02/04/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E5%B9%B6%E6%9F%A5%E9%9B%86/" class="post-title-link" itemprop="url">可持久化并查集</a>
         </h2>
 
         <div class="post-meta">
@@ -1024,7 +788,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-09 19:55:27" itemprop="dateCreated datePublished" datetime="2020-12-09T19:55:27+08:00">2020-12-09</time>
+              <time title="创建时间：2021-02-04 17:15:35" itemprop="dateCreated datePublished" datetime="2021-02-04T17:15:35+08:00">2021-02-04</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -1033,15 +797,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
 
           
 
@@ -1054,23 +809,131 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>每个叶子节点为最小的分割区间，即为数组存储的值。</p>
-<p>假设树的高度为k，0,1,2$\dots$k，另n为区间个数，则有$2^{k - 1} &lt; n \le 2^k$，整棵树的节点个数有$2^{k + 1} - 1$个，通常线段树空间大小为4 * n</p>
-<p>leetcode 1109 航班预订统计</p>
-<p>leetcode 307 区间和检索-数组可修改</p>
-<p>leetcode 308 二维区域和检索—可变</p>
-<h4 id="线段树建树"><a href="#线段树建树" class="headerlink" title="线段树建树"></a>线段树建树</h4><p>数组下标同树状数组相同，都是从1开始</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == r) &#123;</span><br><span class="line">        d[p] = a[l];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    build(l, m, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">    build(m + <span class="number">1</span>, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">    d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <h3 id="可持久化并查集"><a href="#可持久化并查集" class="headerlink" title="可持久化并查集"></a>可持久化并查集</h3><p>可持久化并查集 = 可持久化 + 并查集 = 主席树 + 并查集</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths-ii/">leetcode 1724 检查边长度限制的路径是否存在 II</a></p>
+<p>主席树方便用来维护历史的版本信息，可以支持回退， 访问之前版本的数据结构。</p>
+<p>并查集，常用的两种优化方法是路径压缩，按秩合并。在可持久化并查集中只会用到按秩合并，即深度小的点向深度大的点合并，保证单次查询的时间复杂度为$ologn$</p>
+<ul>
+<li>可持久化并查集进本操作，状态定义</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> tot;</span><br><span class="line"><span class="keyword">int</span> rt[N] <span class="comment">// 保存每一个版本的头结点</span></span><br><span class="line"><span class="keyword">int</span> ls[N &lt;&lt; <span class="number">5</span>], rs[N &lt;&lt; <span class="number">5</span>] <span class="comment">// 每个节点的左右孩子</span></span><br><span class="line"><span class="keyword">int</span> fa[N &lt;&lt; <span class="number">5</span>], sz[N &lt;&lt; <span class="number">5</span>] <span class="comment">// 节点的父亲、树的高度</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="线段树区间查询"><a href="#线段树区间查询" class="headerlink" title="线段树区间查询"></a>线段树区间查询</h4><p>l，r为查询区间，cl，cr为当前区间的左右边界。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(cl &gt; r || cr &lt; l) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) <span class="keyword">return</span> d[p];</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(l &lt;= mid) sum += query(l, r, p &lt;&lt; <span class="number">1</span>, cl, mid);</span><br><span class="line">        <span class="keyword">if</span>(r &gt; mid) sum += quert(l, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>s, mid + <span class="number">1</span>, cr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>建立基础主席树</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> &amp;t, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">	t = ++tot;</span><br><span class="line">	<span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">		fa[t] = l;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	build(ls[t], l, mid);</span><br><span class="line">	build(rs[t], mid + <span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查找某一个元素在主席树中的下标</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// t为某一历史版本的根节点下标， x为待查找的元素</span></span><br><span class="line">	<span class="keyword">if</span> (l == r) <span class="keyword">return</span> t;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span> (x &lt;= mid) <span class="keyword">return</span> query(ls[t], l, mid, x);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> query(rs[t], mid + <span class="number">1</span>, r, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查找版本号为t元素x的祖先</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> p = query(t, l, r, x); <span class="comment">// 查询x的下标</span></span><br><span class="line">	<span class="keyword">if</span> (fa[p] == x) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">return</span> find(t, l, r, fa[p]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>按秩合并</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> pre, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x, <span class="keyword">int</span> father)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 修改x节点的父亲为father</span></span><br><span class="line">    <span class="keyword">int</span> t = ++tot;</span><br><span class="line">    ls[t] = ls[pre], rs[t] = rs[pre];</span><br><span class="line">    <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">        fa[t] = father;</span><br><span class="line">        sz[t] = sz[pre];</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (x &lt;= mid) ls[t] = unite(ls[pre], l, mid, x, father);</span><br><span class="line">    <span class="keyword">else</span> rs[t] = unite(rs[pre], mid + <span class="number">1</span>, r, x, father);</span><br><span class="line">    <span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新合并后父节点的深度</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">		sz[t]++;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span> (x &lt;= mid) update(ls[t], l, mid, x);</span><br><span class="line">	<span class="keyword">else</span> update(rs[t], mid + <span class="number">1</span>, r, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>全部代码如下,  java用时329ms通过了全部测试用例， 但是用c++超时了…..不开o2优化太坑人了。</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> GCC optimize(2)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DistanceLimitedPathsExist</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> N = <span class="number">10005</span>;</span><br><span class="line">    <span class="keyword">int</span> tot, n;</span><br><span class="line">    <span class="keyword">int</span> rt[N], ls[N &lt;&lt; <span class="number">5</span>], rs[N &lt;&lt; <span class="number">5</span>], fa[N &lt;&lt; <span class="number">5</span>], sz[N &lt;&lt; <span class="number">5</span>];</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dis;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> &amp;t, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">        t = ++tot;</span><br><span class="line">        <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">            fa[t] = l;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        build(ls[t], l, mid);</span><br><span class="line">        build(rs[t], mid + <span class="number">1</span>, r);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l == r) <span class="keyword">return</span> t;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= mid) <span class="keyword">return</span> query(ls[t], l, mid, x);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> query(rs[t], mid + <span class="number">1</span>, r, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> p = query(t, l, r, x); </span><br><span class="line">        <span class="keyword">if</span> (fa[p] == x) <span class="keyword">return</span> p;</span><br><span class="line">        <span class="keyword">return</span> find(t, l, r, fa[p]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">unite</span><span class="params">(<span class="keyword">int</span> pre, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x, <span class="keyword">int</span> father)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 修改x节点的父亲为father</span></span><br><span class="line">        <span class="keyword">int</span> t = ++tot;</span><br><span class="line">        ls[t] = ls[pre], rs[t] = rs[pre];</span><br><span class="line">        <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">            fa[t] = father;</span><br><span class="line">            sz[t] = sz[pre];</span><br><span class="line">            <span class="keyword">return</span> t;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= mid) ls[t] = unite(ls[pre], l, mid, x, father);</span><br><span class="line">        <span class="keyword">else</span> rs[t] = unite(rs[pre], mid + <span class="number">1</span>, r, x, father);</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">            sz[t]++;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= mid) update(ls[t], l, mid, x);</span><br><span class="line">        <span class="keyword">else</span> update(rs[t], mid + <span class="number">1</span>, r, x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    DistanceLimitedPathsExist(<span class="keyword">int</span> n, <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; edgeList) &#123;</span><br><span class="line">        tot = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;n = n;</span><br><span class="line">        <span class="built_in">memset</span>(rt, <span class="number">0</span>, <span class="keyword">sizeof</span>(rt));</span><br><span class="line">        <span class="built_in">memset</span>(ls, <span class="number">0</span>, <span class="keyword">sizeof</span>(ls));</span><br><span class="line">        <span class="built_in">memset</span>(rs, <span class="number">0</span>, <span class="keyword">sizeof</span>(rs));</span><br><span class="line">        <span class="built_in">memset</span>(fa, <span class="number">0</span>, <span class="keyword">sizeof</span>(fa));</span><br><span class="line">        <span class="built_in">memset</span>(sz, <span class="number">0</span>, <span class="keyword">sizeof</span>(sz));</span><br><span class="line">        sort(edgeList.begin(), edgeList.end(), [](<span class="keyword">auto</span> a, <span class="keyword">auto</span> b) &#123;</span><br><span class="line">            <span class="keyword">return</span> a[<span class="number">2</span>] &lt; b[<span class="number">2</span>];</span><br><span class="line">        &#125;);</span><br><span class="line">        build(rt[<span class="number">0</span>], <span class="number">0</span>, n - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edgeList.size(); ++i) &#123;</span><br><span class="line">            rt[i + <span class="number">1</span>] = rt[i];</span><br><span class="line">            <span class="keyword">int</span> x = edgeList[i][<span class="number">0</span>], y = edgeList[i][<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">int</span> posx = find(rt[i], <span class="number">0</span>, n - <span class="number">1</span>, x), posy = find(rt[i], <span class="number">0</span>, n - <span class="number">1</span>, y);</span><br><span class="line">            <span class="keyword">if</span> (fa[posx] != fa[posy]) &#123;</span><br><span class="line">                <span class="keyword">if</span> (sz[posx] &gt; sz[posy]) swap(posx, posy);</span><br><span class="line">                rt[i + <span class="number">1</span>] = unite(rt[i], <span class="number">0</span>, n - <span class="number">1</span>, fa[posx], fa[posy]);</span><br><span class="line">                <span class="keyword">if</span> (sz[posx] == sz[posy]) update(rt[i + <span class="number">1</span>], <span class="number">0</span>, n - <span class="number">1</span>, fa[posy]);</span><br><span class="line">            &#125;</span><br><span class="line">            dis.push_back(edgeList[i][<span class="number">2</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q, <span class="keyword">int</span> limit)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> num = upper_bound(dis.begin(), dis.end(), limit - <span class="number">1</span>) - dis.begin();</span><br><span class="line">        <span class="keyword">int</span> version = rt[num];</span><br><span class="line">        <span class="keyword">int</span> posx = find(version, <span class="number">0</span>, n - <span class="number">1</span>, p);</span><br><span class="line">        <span class="keyword">int</span> posy = find(version, <span class="number">0</span>, n - <span class="number">1</span>, q);</span><br><span class="line">        <span class="keyword">if</span> (fa[posx] == fa[posy]) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h4 id="线段树的点更新-O-nlogn"><a href="#线段树的点更新-O-nlogn" class="headerlink" title="线段树的点更新$O(nlogn)$"></a>线段树的点更新$O(nlogn)$</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> k, <span class="keyword">int</span> v, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p)</span> </span>&#123;  <span class="comment">//update(k, v, 1, n, 1)</span></span><br><span class="line">    <span class="keyword">if</span>(l == r) a[k] += v, d[k] += v;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(k &lt;= mid) &#123;</span><br><span class="line">            update(k, v, l, mid, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            update(k, v, mid + <span class="number">1</span>, r, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="线段树区间修改与懒惰标记"><a href="#线段树区间修改与懒惰标记" class="headerlink" title="线段树区间修改与懒惰标记"></a>线段树区间修改与懒惰标记</h4><p>对于一个区间$[l, r]$，如果每次更新区间中的每个值，那么时间复杂度为$O(nlogn)$，为了提高更新效率，采用了mark进行标记。在递归更新过程中，当当前节点区间为待更新区间的真子集时，不再向下更新。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_down</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    mark[p &lt;&lt; <span class="number">1</span>] += mark[p];</span><br><span class="line">    mark[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>] += mark[p];</span><br><span class="line">    d[p &lt;&lt; <span class="number">1</span>] += mark[p] * (len - len / <span class="number">2</span>);</span><br><span class="line">    d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>] += mark[p] * len / <span class="number">2</span>;</span><br><span class="line">    mark[p] = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt; cr || r &lt; cl) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) &#123;</span><br><span class="line">        d[p] += (cr - cl + <span class="number">1</span>) * val;</span><br><span class="line">        <span class="keyword">if</span>(cl &gt; cr) mark[p] += d;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="keyword">int</span> mid = cl + (cr - cl) / <span class="number">2</span>;</span><br><span class="line">        push_down(p, cr - cl + <span class="number">1</span>);</span><br><span class="line">        update(l, r, val, cl, mid, p &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        update(l, r, val, mid + <span class="number">1</span>, cr, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">        d[p] = d[p &lt;&lt; <span class="number">1</span>] + d[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
 
-<h4 id="线段树区间查询-包含懒惰标记"><a href="#线段树区间查询-包含懒惰标记" class="headerlink" title="线段树区间查询 包含懒惰标记"></a>线段树区间查询 包含懒惰标记</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> cl, <span class="keyword">int</span> cr, <span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt; cr || r &lt; cl) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(l &lt;= cl &amp;&amp; r &gt;= cr) <span class="keyword">return</span> d[p];</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	    <span class="keyword">if</span>(mark[p]) push_down(p, cr - cl + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> query(l, r, cl, mid, p &lt;&lt; <span class="number">1</span>) + query(l, r, mid + <span class="number">1</span>, cr, p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://abeltian.top/2021/02/03/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%B8%BB%E5%B8%AD%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="tys">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TYS的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/03/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%B8%BB%E5%B8%AD%E6%A0%91/" class="post-title-link" itemprop="url">主席树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-03 10:28:14" itemprop="dateCreated datePublished" datetime="2021-02-03T10:28:14+08:00">2021-02-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-10 16:53:11" itemprop="dateModified" datetime="2021-09-10T16:53:11+08:00">2021-09-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="主席树（可持久化线段树）"><a href="#主席树（可持久化线段树）" class="headerlink" title="主席树（可持久化线段树）"></a>主席树（可持久化线段树）</h2><p>问题描述：</p>
+<blockquote>
+<p>给定N个数（int范围内），一共M次询问，每次都要询问区间[[l,r]的第k大的数。 其中N, M, l, r均不超过$2\times10^5$，保证询问有答案</p>
+</blockquote>
+<p>​        主席树本名可持久化线段树，也就是说，主席树是基于线段树发展而来的一种数据结构。其前缀”可持久化”意在给线段树增加一些历史点来维护历史数据，使得我们能在较短时间内查询历史数据，图示如下。</p>
+<p><img src="https://i.loli.net/2021/02/03/B5S7PmvArU9FDkw.png" alt="hjt.png"></p>
+<p>当每插入一个数据时，会修改$logn$个节点，因为主席树的左右子树节点编号不能够计算得到，而是需要记录下来。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">int</span> N = <span class="number">200010</span></span><br><span class="line"><span class="keyword">int</span> rt[N]                  <span class="comment">// 记录插入第i个数后的根节点</span></span><br><span class="line"><span class="keyword">int</span> ls[N &lt;&lt; <span class="number">5</span>], rs[N &lt;&lt; <span class="number">5</span>] <span class="comment">// 记录左儿子，右儿子</span></span><br><span class="line"><span class="keyword">int</span> sum[N &lt;&lt; <span class="number">5</span>]            <span class="comment">// 记录当前节点区间的元素个数</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>将数组复制一份，进行排序，去掉重复的数字离散化。</p>
+</li>
+<li><p>以离散化后的数组为基础建立一个全零的线段树，称为基础主席树</p>
+</li>
+<li><p>对原数据中每一个[1,i]区间统计，有序地插入新节点，i每增加1，就会多一个数，仅需对主席树对应的节点增加1即可</p>
+</li>
+<li><p>对于查询[l, r]中第k小值的操作，找到[l, r]对应的根节点，按照线段树操作的方法即可</p>
+</li>
+</ul>
+<p>建立基础主席树</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> &amp;u, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">	u = ++tot;</span><br><span class="line">	<span class="keyword">if</span> (l == r) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">	build(ls[u], l, mid);</span><br><span class="line">	build(rs[u], mid + <span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>向主席树中加入元素</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">modify</span><span class="params">(<span class="keyword">int</span> pre, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> cur = ++tot;</span><br><span class="line">	ls[cur] = ls[pre]; rs[cur] = rs[pre]; sum[cur] = sum[pre] + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span> (l == r) <span class="keyword">return</span> cur;</span><br><span class="line">	<span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (x &lt;= mid) ls[cur] = modify(ls[cur], l, mid);</span><br><span class="line">    <span class="keyword">else</span> rs[cur] = modify(rs[cur], mid + <span class="number">1</span>, r);</span><br><span class="line">	<span class="keyword">return</span> cur;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查询区间第k大，注意区间下标是从1开始</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, x = sum[ls[v]] - sum[ls[u]];</span><br><span class="line">    <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="keyword">if</span> (k &lt;= x) ans = query(ls[u], ls[v], l, mid, k);</span><br><span class="line">    <span class="keyword">else</span> ans = query(rs[u], rs[v], mid + <span class="number">1</span>, r, k - x);</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
 
@@ -1088,7 +951,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1156,7 +1019,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-count">63</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1169,7 +1032,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1201,7 +1064,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
